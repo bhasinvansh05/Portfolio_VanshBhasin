@@ -5,9 +5,9 @@ import { motion } from 'motion/react';
 
 export function PDFViewer() {
   const [zoom, setZoom] = useState(100);
-  
-  // Sample PDF - you can replace this with your actual resume PDF URL
-  const pdfUrl = "Resume_Vansh.pdf";
+
+  const baseUrl = (import.meta as any).env.BASE_URL as string;
+  const pdfUrl = `${baseUrl}Resume_Vansh.pdf`;
 
   const handleZoomIn = () => {
     setZoom(prev => Math.min(prev + 25, 200));
@@ -20,7 +20,7 @@ export function PDFViewer() {
   const handleDownload = () => {
     const link = document.createElement('a');
     link.href = pdfUrl;
-    link.download = 'resume.pdf';
+    link.download = 'Resume_Vansh.pdf';
     link.click();
   };
 
