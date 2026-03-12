@@ -1,0 +1,70 @@
+name: Create Release
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g. v2.0)'
+        required: false
+        default: 'v2.0.0'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine version
+        id: version
+        run: |
+          PKG_VERSION=$(jq -r '.version' package.json | sed 's/^/v/')
+          VERSION="${{ github.event.inputs.version }}"
+          VERSION="${VERSION:-$PKG_VERSION}"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Check if release already exists
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          if gh release view "$VERSION" --repo "${{ github.repository }}" > /dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create tag and release
+        if: steps.check.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if ! git rev-parse "$VERSION" > /dev/null 2>&1; then
+            git tag -a "$VERSION" -m "Release $VERSION"
+            git push origin "$VERSION"
+          fi
+          gh release create "$VERSION" \
+            --repo "${{ github.repository }}" \
+            --title "Portfolio Website $VERSION" \
+            --notes "## Portfolio Website $VERSION
+
+Complete portfolio redesign and content update:
+
+- 🎨 Complete UI redesign with improved dark-mode design
+- 📋 Updated project cards and visual illustrations
+- 🔬 Added research experience (Elder Lab, NGWN Lab, SARIT)
+- 🖼️ Vector project illustrations
+- ⚡ Optimized assets and structure
+- 🌐 Live at [bhasinvansh.com](https://bhasinvansh05.github.io/Portfolio_VanshBhasin/)" \
+            --target "${{ github.event.repository.default_branch }}"
