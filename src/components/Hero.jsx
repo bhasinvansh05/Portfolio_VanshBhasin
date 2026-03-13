@@ -15,8 +15,8 @@ export default function Hero() {
                 {portfolioData.hero.bio}
               </p>
             </div>
-            
-            <div className="flex justify-center mt-8 sm:mt-12 md:mt-16 z-50 w-full relative"> 
+
+            <div className="flex justify-center mt-4 sm:mt-10 md:mt-16 z-50 w-full relative">
                 <LiquidButton 
                   className="text-white w-full max-w-[12rem] sm:w-48 cursor-pointer text-sm sm:text-base min-h-[48px]" 
                   size={'xl'}
