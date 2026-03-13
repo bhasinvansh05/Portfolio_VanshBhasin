@@ -57,15 +57,15 @@ export default function Projects() {
   const [selectedProject, setSelectedProject] = useState(null);
 
   return (
-    <section id="projects" className="flex flex-col justify-center px-6 py-24 relative z-10 w-full">
+    <section id="projects" className="flex flex-col justify-center px-4 sm:px-6 py-16 sm:py-24 relative z-10 w-full">
       <div className="max-w-7xl mx-auto w-full">
-        <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-foreground mb-4 text-center">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight text-foreground mb-3 sm:mb-4 text-center">
           Featured Work
         </h2>
-        <p className="text-muted-foreground text-sm md:text-base max-w-2xl mx-auto text-center mb-16">
+        <p className="text-muted-foreground text-sm md:text-base max-w-2xl mx-auto text-center mb-10 sm:mb-16 px-2">
           A collection of projects spanning design, development, and AI research.
         </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-8 justify-items-center">
           {projectCards.map((project, index) => (
             <GlassBlogCard
               key={index}

@@ -44,15 +44,15 @@ const skills = [
 
 export default function Skills() {
   return (
-    <section id="skills" className="flex flex-col justify-center px-6 py-24 relative z-10">
+    <section id="skills" className="flex flex-col justify-center px-4 sm:px-6 py-16 sm:py-24 relative z-10">
       <div className="max-w-5xl mx-auto w-full">
-        <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-foreground mb-4 text-center">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight text-foreground mb-3 sm:mb-4 text-center">
           Skills & Technologies
         </h2>
-        <p className="text-muted-foreground text-sm md:text-base max-w-2xl mx-auto text-center mb-16">
+        <p className="text-muted-foreground text-sm md:text-base max-w-2xl mx-auto text-center mb-10 sm:mb-16 px-2">
           Tools and technologies I work with daily.
         </p>
-        <div className="flex flex-wrap justify-center gap-3">
+        <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
           {skills.map((skill) => (
             <CurtainButton
               key={skill.name}

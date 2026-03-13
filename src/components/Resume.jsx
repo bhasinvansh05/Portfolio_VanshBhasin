@@ -7,29 +7,29 @@ export default function Resume() {
   const pdfUrl = './Resume_Vansh.pdf';
 
   return (
-    <section id="resume" className="flex flex-col justify-center px-6 py-24 relative z-10">
+    <section id="resume" className="flex flex-col justify-center px-4 sm:px-6 py-16 sm:py-24 relative z-10">
       <div className={`${isExpanded ? 'max-w-6xl' : 'max-w-4xl'} mx-auto w-full transition-all duration-500`}>
-        <div className="text-center mb-12">
-          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-foreground mb-4">
+        <div className="text-center mb-8 sm:mb-12">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight text-foreground mb-3 sm:mb-4">
             Resume
           </h2>
-          <p className="text-muted-foreground text-sm md:text-base max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-sm md:text-base max-w-2xl mx-auto px-2">
             A snapshot of my experience, skills, and education.
           </p>
         </div>
 
         <motion.div
           layout
-          className="relative bg-card/30 border border-border/50 rounded-2xl overflow-hidden backdrop-blur-md"
+          className="relative bg-card/30 border border-border/50 rounded-xl sm:rounded-2xl overflow-hidden backdrop-blur-md"
           transition={{ duration: 0.4, ease: [0.19, 1, 0.22, 1] }}
         >
           {/* Toolbar */}
-          <div className="flex items-center justify-between px-5 py-3 border-b border-border/50 bg-card/50">
-            <div className="flex items-center gap-3">
-              <FileText className="h-4 w-4 text-primary" />
-              <span className="text-sm font-medium text-foreground">Resume_Vansh.pdf</span>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 px-3 sm:px-5 py-2 sm:py-3 border-b border-border/50 bg-card/50">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+              <FileText className="h-4 w-4 shrink-0 text-primary" />
+              <span className="text-xs sm:text-sm font-medium text-foreground truncate">Resume_Vansh.pdf</span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center justify-end gap-2">
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
                 className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors cursor-pointer"

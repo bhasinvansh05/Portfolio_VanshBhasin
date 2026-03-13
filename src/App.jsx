@@ -12,23 +12,28 @@ import { Home, User, Briefcase, Mail, GraduationCap, Wrench, FileText } from 'lu
 
 function App() {
   const [scrollY, setScrollY] = useState(0);
+  const [isNarrow, setIsNarrow] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
       setScrollY(window.scrollY);
     };
-    
-    // Add passive event listener for better scrolling performance
     window.addEventListener("scroll", handleScroll, { passive: true });
-    
-    // Cleanup
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    setIsNarrow(mq.matches);
+    const handler = (e) => setIsNarrow(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
   }, []);
 
   // Calculate dynamic blur and darkness relative to scroll position (0 to 600px)
   const maxScroll = 600;
   const scrollRatio = Math.min(scrollY / maxScroll, 1);
-  const blurAmount = scrollRatio * 8; // Max 8px blur
+  const blurAmount = scrollRatio * (isNarrow ? 4 : 8); // Less blur on mobile for performance
   const darkenAmount = scrollRatio * 0.4; // Max 0.4 opacity background
 
   const navItems = [

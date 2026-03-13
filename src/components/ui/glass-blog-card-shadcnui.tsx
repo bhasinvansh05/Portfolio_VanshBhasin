@@ -51,7 +51,7 @@ export function GlassBlogCard({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className={cn("w-full max-w-[400px]", className)}
+      className={cn("w-full max-w-[400px] min-w-0", className)}
     >
       <Card className="group relative h-full overflow-hidden rounded-2xl border-border/50 bg-card/30 backdrop-blur-md transition-all duration-300 hover:border-primary/50 hover:shadow-xl hover:shadow-primary/10">
         {/* Image Section */}

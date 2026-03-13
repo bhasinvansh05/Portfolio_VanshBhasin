@@ -37,20 +37,20 @@ export default function About() {
   };
 
   return (
-    <section id="about" className="min-h-[70vh] flex flex-col justify-center px-6 py-24 relative z-10 w-full overflow-hidden">
+    <section id="about" className="min-h-[70vh] flex flex-col justify-center px-4 sm:px-6 py-16 sm:py-24 relative z-10 w-full overflow-hidden">
       <div className="max-w-5xl mx-auto w-full" ref={heroRef}>
-        <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white mb-12 drop-shadow-[0_2px_10px_rgba(0,0,0,1)]">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight text-white mb-8 sm:mb-12 drop-shadow-[0_2px_10px_rgba(0,0,0,1)]">
           About
         </h2>
         
-        <div className="flex flex-col lg:flex-row items-start gap-8 bg-card/30 border border-white/5 rounded-3xl p-8 sm:p-12 backdrop-blur-md">
+        <div className="flex flex-col lg:flex-row items-start gap-6 sm:gap-8 bg-card/30 border border-white/5 rounded-2xl sm:rounded-3xl p-5 sm:p-8 md:p-12 backdrop-blur-md">
           <div className="flex-1">
             <TimelineContent
               as="h3"
               animationNum={0}
               timelineRef={heroRef}
               customVariants={revealVariants}
-              className="text-xl sm:text-2xl lg:text-3xl leading-[1.6] sm:leading-[1.6] lg:leading-[1.6] font-medium text-muted-foreground"
+              className="text-base sm:text-xl md:text-2xl lg:text-3xl leading-[1.6] font-medium text-muted-foreground"
             >
               Hey! I'm Vansh — a Computer Science student at York University with a soft spot for{" "}
               <TimelineContent
