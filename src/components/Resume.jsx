@@ -4,7 +4,7 @@ import { Download, Maximize2, Minimize2, FileText } from 'lucide-react';
 
 export default function Resume() {
   const [isExpanded, setIsExpanded] = useState(false);
-  const pdfUrl = '/Resume_Vansh.pdf';
+  const pdfUrl = `${import.meta.env.BASE_URL}Resume_Vansh.pdf`;
 
   return (
     <section id="resume" className="flex flex-col justify-center px-6 py-24 relative z-10">
