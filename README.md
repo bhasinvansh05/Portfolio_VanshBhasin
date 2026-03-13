@@ -1,47 +1,77 @@
-# [PLACEHOLDER] Portfolio Scaffold
+# Vansh Bhasin | Computer Science Portfolio
 
-A minimal, bare-bones React scaffolding for a CS portfolio website.
+Welcome to my portfolio! I'm a CS student at York University specializing in AI, Data, and Clean Architecture. I love turning complex problems into scalable solutions, from computer vision pipelines to sleek web platforms.
 
-## Tech Stack
-- React
-- Vite
-- TailwindCSS
+## 🚀 About Me
 
-## Project Structure
+Hey! I'm Vansh. Whether I'm teaching drones how to spot traffic, mapping 5G networks with deep learning, or building slick full-stack platforms, I thrive at the intersection of AI, data, and software engineering.
+
+- 🎓 **Education:** CS student at York University
+- 🛠️ **Current Focus:** AI, Data Analytics, and Full-Stack Development
+- 🏎️ **Interests:** Formula 1 strategy, minimal UI design, and niche perfumes
+
+## 🛠️ Tech Stack
+
+### Core
+- **Frontend:** React, Vite, HTML5, CSS3
+- **Styling:** TailwindCSS
+- **Animations:** Framer Motion, GSAP, Lenis (Smooth Scroll)
+- **3D Graphics:** Three.js
+
+### Tools & Others
+- **Package Manager:** npm
+- **Icons:** Lucide React
+- **UI Components:** Radix UI
+
+## ✨ Key Features
+
+- **Smooth Scrolling:** Powered by Lenis for a premium feel.
+- **Dynamic Animations:** Interactive elements using GSAP and Framer Motion.
+- **Responsive Design:** Fully optimized for all screen sizes with TailwindCSS.
+- **Modern UI:** Clean, minimal, and aesthetic design focused on user experience.
+
+## 📂 Project Structure
+
 ```text
 .
-├── .gitignore
-├── index.html
-├── package.json
-├── postcss.config.js
-├── README.md
-├── tailwind.config.js
-├── vite.config.js
-└── src
-    ├── App.jsx
-    ├── index.css
-    ├── main.jsx
-    ├── components
-    │   ├── About.jsx
-    │   ├── Contact.jsx
-    │   ├── Hero.jsx
-    │   ├── Navbar.jsx
-    │   ├── Projects.jsx
-    │   └── WorkExperience.jsx
-    └── data
-        └── portfolio.js
+├── src
+│   ├── components   # UI elements (Hero, About, Projects, etc.)
+│   ├── data         # Portfolio content (portfolio.js)
+│   ├── lib          # Utility functions
+│   ├── App.jsx      # Main application entry
+│   └── index.css    # Global styles and Tailwind directives
+├── public           # Static assets
+├── index.html       # HTML entry
+└── package.json     # Dependencies and scripts
 ```
 
-## Local Setup Instructions
+## 💻 Local Development
 
-1. Install dependencies:
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/bhasinvansh05/Portfolio_VanshBhasin.git
+   ```
+
+2. **Install dependencies:**
    ```bash
    npm install
    ```
 
-2. Start the development server:
+3. **Start the development server:**
    ```bash
    npm run dev
    ```
 
-3. Open your browser to the URL provided in the terminal (usually `http://localhost:5173`).
+4. **Build for production:**
+   ```bash
+   npm run build
+   ```
+
+## 📬 Contact
+
+- **Email:** [vansh05@my.yorku.ca](mailto:vansh05@my.yorku.ca)
+- **LinkedIn:** [linkedin.com/in/vansh05](https://www.linkedin.com/in/vansh05/)
+- **GitHub:** [github.com/bhasinvansh05](https://github.com/bhasinvansh05)
+
+---
+Built by Vansh Bhasin.
