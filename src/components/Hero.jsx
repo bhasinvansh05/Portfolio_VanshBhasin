@@ -11,7 +11,7 @@ export default function Hero() {
                 {portfolioData.hero.title}
               </h1>
               
-              <p className="text-white/80 max-w-xl text-center font-medium leading-relaxed drop-shadow-[0_0_10px_rgba(0,0,0,1)] text-base sm:text-lg md:text-2xl px-2">
+              <p className="text-[#f5f5f5] max-w-xl text-center font-medium leading-relaxed drop-shadow-[0_0_10px_rgba(0,0,0,1)] text-base sm:text-lg md:text-2xl px-2">
                 {portfolioData.hero.bio}
               </p>
             </div>

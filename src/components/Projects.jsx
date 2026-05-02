@@ -80,7 +80,7 @@ export default function Projects() {
         <p className="text-muted-foreground text-sm md:text-base max-w-2xl mx-auto text-center mb-10 sm:mb-16 px-2">
           A collection of projects spanning design, development, and AI research.
         </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-8 justify-items-center">
+        <div className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-8 md:gap-10">
           {projectCards.map((project, index) => (
             <GlassBlogCard
               key={index}
@@ -91,7 +91,7 @@ export default function Projects() {
               date={project.date}
               readTime={project.readTime}
               tags={project.tags}
-              className="max-w-full"
+              className="max-w-full w-full justify-self-stretch"
               onReadMore={() => setSelectedProject(project)}
             />
           ))}
