@@ -59,8 +59,8 @@ const defaultProps: Partial<HeroLandingProps> = {
   },
   navigation: [
     { name: 'About', href: '#about' },
-    { name: 'Experience', href: '#experience' },
     { name: 'Projects', href: '#projects' },
+    { name: 'Experience', href: '#experience' },
     { name: 'Contact', href: '#contact' },
   ],
   loginText: "View Resume",
