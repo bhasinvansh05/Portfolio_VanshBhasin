@@ -11,6 +11,21 @@ import { Badge } from './ui/badge';
 
 const projectCards = [
   {
+    title: "ConsultHub",
+    titleHref: "https://consulthub.vanshbhasin.dev",
+    excerpt:
+      "Full-stack consulting booking platform: Spring Boot REST API, PostgreSQL, Dockerized React frontend, and role-based flows for clients, consultants, and admins.",
+    tags: ["Spring Boot", "PostgreSQL"],
+    readTime: "EECS 3311",
+    date: "2025–2026",
+    details: [
+      "Layered Spring Boot backend (package-by-feature) with JPA: services catalog, availability slots, booking lifecycle, payments, notifications, JWT security, and admin policies.",
+      "Modeled bookings with the State pattern (requested → confirmed → paid → completed, with reject/cancel paths), Strategy pattern for payment types (credit, debit, PayPal, bank transfer), and a factory for hydrating states from persisted status.",
+      "Ran end-to-end with Docker Compose (PostgreSQL, API, Vite React UI), Neon or local Postgres optional, H2 for tests; integrated Gemini-powered AI assistant for clients.",
+      "Live app at consulthub.vanshbhasin.dev; source at https://github.com/bhasinvansh05/ConsultHub.",
+    ],
+  },
+  {
     title: "Drone Traffic Analysis Pipeline",
     excerpt: "Scalable computer vision system for analyzing drone-captured traffic footage using YOLO models.",
     tags: ["Computer Vision", "YOLO"],
@@ -70,6 +85,7 @@ export default function Projects() {
             <GlassBlogCard
               key={index}
               title={project.title}
+              titleHref={project.titleHref}
               excerpt={project.excerpt}
               author={author}
               date={project.date}
@@ -87,7 +103,18 @@ export default function Projects() {
         <DialogContent className="sm:max-w-xl bg-card/95 backdrop-blur-xl border-border/50">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold text-foreground">
-              {selectedProject?.title}
+              {selectedProject?.titleHref ? (
+                <a
+                  href={selectedProject.titleHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+                >
+                  {selectedProject.title}
+                </a>
+              ) : (
+                selectedProject?.title
+              )}
             </DialogTitle>
             <DialogDescription className="text-muted-foreground">
               {selectedProject?.readTime} · {selectedProject?.date}

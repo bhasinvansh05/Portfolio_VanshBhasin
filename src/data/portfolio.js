@@ -10,27 +10,35 @@ export const portfolioData = {
   experience: [
     {
       id: 1,
+      company: "RBC",
+      role: "Data Analyst · Co-op",
+      duration: "May 2026 - Present",
+      description:
+        "Supporting workforce management initiatives within RBC’s Operation Process Engineering team by developing Tableau talent dashboards, cleaning and validating large datasets, and contributing to executive-level reports and presentations. Collaborating with internal stakeholders to streamline operational processes and surface actionable workforce insights using Python, SQL, and data visualization tools. Toronto, Ontario, Canada · Hybrid.",
+    },
+    {
+      id: 2,
       company: "Sarit Micromobility",
       role: "Research Assistant (Mobility Systems & Software Integration)",
       duration: "Jan 2026 - Present",
       description: "Contributed to the development and testing of software systems supporting telemetry, safety, and data processing for electric micro-mobility vehicles."
     },
     {
-      id: 2,
+      id: 3,
       company: "York University Library",
       role: "Library Facilities Lead Hand",
       duration: "Sept 2024 - Present",
       description: "Supporting daily library operations through patron assistance, policy communication, and way-finding guidance. Leading staff coordination and special library projects to ensure efficient facility operations."
     },
     {
-      id: 3,
+      id: 4,
       company: "Elder Lab, York University",
       role: "Research Assistant (Computer Vision & AI)",
       duration: "May 2025 - Sept 2025",
       description: "Developing scalable computer vision pipelines to analyze drone traffic via YOLO models. Sped up deployment by 40% across hybrid cloud environments using Docker and CI/CD tools."
     },
     {
-      id: 4,
+      id: 5,
       company: "NGWN Lab, York University",
       role: "Research Assistant (Deep Learning & Data Analytics)",
       duration: "May 2024 - April 2025",

@@ -7,6 +7,7 @@ import { BookOpen, Clock } from "lucide-react";
 
 interface GlassBlogCardProps {
   title?: string;
+  titleHref?: string;
   excerpt?: string;
   image?: string;
   author?: {
@@ -37,6 +38,7 @@ const defaultPost = {
 
 export function GlassBlogCard({
   title = defaultPost.title,
+  titleHref,
   excerpt = defaultPost.excerpt,
   image = defaultPost.image,
   author = defaultPost.author,
@@ -93,7 +95,19 @@ export function GlassBlogCard({
         <div className="flex flex-col gap-4 p-5">
           <div className="space-y-2">
             <h3 className="text-xl font-semibold leading-tight tracking-tight text-foreground transition-colors group-hover:text-primary">
-              {title}
+              {titleHref ? (
+                <a
+                  href={titleHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-sm"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {title}
+                </a>
+              ) : (
+                title
+              )}
             </h3>
             <p className="line-clamp-2 text-sm text-muted-foreground">
               {excerpt}
