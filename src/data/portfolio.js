@@ -14,7 +14,7 @@ export const portfolioData = {
       role: "Data Analyst · Co-op",
       duration: "May 2026 - Present",
       description:
-        "Supporting workforce management initiatives within RBC’s Operation Process Engineering team by developing Tableau talent dashboards, cleaning and validating large datasets, and contributing to executive-level reports and presentations. Collaborating with internal stakeholders to streamline operational processes and surface actionable workforce insights using Python, SQL, and data visualization tools. Toronto, Ontario, Canada · Hybrid.",
+        "Supporting workforce management initiatives within RBC’s Operation Process Engineering team by developing Tableau talent dashboards, cleaning and validating large datasets, and contributing to executive-level reports and presentations. Collaborating with internal stakeholders to streamline operational processes and surface actionable workforce insights using Python, SQL, and data visualization tools.",
     },
     {
       id: 2,
