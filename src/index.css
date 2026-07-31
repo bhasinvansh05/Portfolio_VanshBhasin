@@ -81,3 +81,60 @@ body {
     scroll-behavior: auto;
   }
 }
+
+/* Mesh creature eye blink (replaces styled-jsx from shader-svg) */
+@keyframes creature-blink {
+  0%,
+  90%,
+  100% {
+    ry: 30;
+  }
+  95% {
+    ry: 3;
+  }
+}
+
+.creature-blink {
+  animation: creature-blink 3s infinite ease-in-out;
+}
+
+@keyframes creature-energize-glow {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  40% {
+    filter: brightness(1.25);
+  }
+  70% {
+    filter: brightness(1.1);
+  }
+}
+
+.creature-energize {
+  animation: creature-energize-glow 1.6s ease-in-out;
+}
+
+/* Playful pulse when the creature stares at / zaps a UI element */
+@keyframes creature-play-pulse {
+  0%,
+  100% {
+    filter: brightness(1);
+    transform: scale(1);
+  }
+  40% {
+    filter: brightness(1.18);
+    transform: scale(1.015);
+  }
+  70% {
+    filter: brightness(1.08);
+    transform: scale(1.008);
+  }
+}
+
+.creature-play-pulse {
+  animation: creature-play-pulse 0.85s ease-in-out;
+  transform-origin: center center;
+}
+
+
