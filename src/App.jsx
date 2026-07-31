@@ -18,6 +18,8 @@ import Contact from './components/Contact';
 import { Starfield } from './components/ui/starfield';
 import GooeyNav from './components/ui/GooeyNav';
 
+const STAR_COLOR = { r: 245, g: 248, b: 255 };
+
 /** Isolated so scroll/resize sizing never remounts the canvas mid-frame. */
 const SiteStarfieldBackground = memo(function SiteStarfieldBackground({
   isNarrow,
@@ -31,7 +33,7 @@ const SiteStarfieldBackground = memo(function SiteStarfieldBackground({
       waveFrequency={isNarrow ? 14 : 18}
       starEscapeWidth={starEscapeWidth}
       voidWidth={voidWidth}
-      starColor={{ r: 245, g: 248, b: 255 }}
+      starColor={STAR_COLOR}
       maxOpacity={255}
       rotationSpeed={isNarrow ? 0.00025 : 0.0004}
       waveSpeed={isNarrow ? 0.006 : 0.009}
@@ -41,19 +43,24 @@ const SiteStarfieldBackground = memo(function SiteStarfieldBackground({
   );
 });
 
-/** Upper-middle circle origin by breakpoint — shared by starfield + hero. */
-function getHeroOriginY(width) {
-  if (width < 640) return 0.36;
-  if (width < 768) return 0.38;
-  if (width < 1024) return 0.40;
-  return 0.42;
+/** Upper-middle name origin in dvh — shared CSS var for hero layout. */
+function getHeroOriginDvh(width) {
+  if (width < 768) return '36dvh';
+  if (width < 1024) return '40dvh';
+  return '42dvh';
+}
+
+function viewportHeight() {
+  return window.visualViewport?.height ?? window.innerHeight;
 }
 
 function App() {
   const [isNarrow, setIsNarrow] = useState(false);
   const [ring, setRing] = useState({ escape: 340, void: 110 });
-  const [centerYRatio, setCenterYRatio] = useState(0.4);
+  const [centerYRatio, setCenterYRatio] = useState(0.36);
+  const [heroOriginDvh, setHeroOriginDvh] = useState('36dvh');
   const veilRef = useRef(null);
+  const lastCenterYRef = useRef(0.36);
 
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 767px)');
@@ -64,76 +71,129 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const updateOrigin = () => setCenterYRatio(getHeroOriginY(window.innerWidth));
-    updateOrigin();
-    window.addEventListener('resize', updateOrigin);
-    return () => window.removeEventListener('resize', updateOrigin);
+    const updateOriginDvh = () => setHeroOriginDvh(getHeroOriginDvh(window.innerWidth));
+    updateOriginDvh();
+    window.addEventListener('resize', updateOriginDvh);
+    window.addEventListener('orientationchange', updateOriginDvh);
+    return () => {
+      window.removeEventListener('resize', updateOriginDvh);
+      window.removeEventListener('orientationchange', updateOriginDvh);
+    };
   }, []);
 
-  // Size the star ring so it surrounds the hero name
+  // Size the star ring to the title and lock circle center to the name's viewport center.
+  // Do NOT run on scroll — that caused setState thrash and starfield remount flicker.
   useEffect(() => {
     const measure = () => {
       const title = document.querySelector('#hero h1');
+      const field = document.getElementById('site-starfield');
       const vw = window.innerWidth;
-      const vh = window.innerHeight;
+      const vh = viewportHeight();
 
       if (title) {
         const r = title.getBoundingClientRect();
         const halfW = r.width / 2;
         const halfH = r.height / 2;
-        // Inner void stays clear for the name; outer ring hugs its silhouette
         const voidW = Math.max(72, Math.min(halfW * 0.72, halfH + 36));
         const escape = Math.max(
           voidW + 90,
           Math.hypot(halfW, halfH) + (vw < 768 ? 36 : 56),
         );
-        setRing({
-          void: Math.round(voidW),
-          escape: Math.round(Math.min(escape, Math.min(vw, vh) * 0.52)),
-        });
+        const nextVoid = Math.round(voidW);
+        const nextEscape = Math.round(Math.min(escape, Math.min(vw, vh) * 0.52));
+        setRing((prev) =>
+          prev.void === nextVoid && prev.escape === nextEscape
+            ? prev
+            : { void: nextVoid, escape: nextEscape },
+        );
+
+        if (window.scrollY < 8 && r.height > 0 && field) {
+          const fr = field.getBoundingClientRect();
+          const fieldH = Math.max(1, fr.height);
+          const nameCenterY = r.top + r.height / 2 - fr.top;
+          const nextRatio = nameCenterY / fieldH;
+          if (Math.abs(nextRatio - lastCenterYRef.current) > 0.005) {
+            lastCenterYRef.current = nextRatio;
+            setCenterYRatio(nextRatio);
+          }
+        }
         return;
       }
 
       const base = Math.min(vw, vh);
-      setRing({
-        void: Math.round(base * 0.16),
-        escape: Math.round(base * 0.38),
-      });
+      const nextVoid = Math.round(base * 0.16);
+      const nextEscape = Math.round(base * 0.38);
+      setRing((prev) =>
+        prev.void === nextVoid && prev.escape === nextEscape
+          ? prev
+          : { void: nextVoid, escape: nextEscape },
+      );
+    };
+
+    let debounceId = 0;
+    const debouncedMeasure = () => {
+      window.clearTimeout(debounceId);
+      debounceId = window.setTimeout(measure, 100);
     };
 
     measure();
-    // Layout fonts can settle after first paint
-    const t = window.setTimeout(measure, 120);
-    window.addEventListener('resize', measure);
+    const t1 = window.setTimeout(measure, 50);
+    const t2 = window.setTimeout(measure, 250);
+
+    window.addEventListener('resize', debouncedMeasure);
+    window.addEventListener('orientationchange', debouncedMeasure);
+
+    const vv = window.visualViewport;
+    // Debounce iOS chrome show/hide; ignore visualViewport scroll (fires while page scrolling)
+    vv?.addEventListener('resize', debouncedMeasure);
+
     return () => {
-      window.clearTimeout(t);
-      window.removeEventListener('resize', measure);
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+      window.clearTimeout(debounceId);
+      window.removeEventListener('resize', debouncedMeasure);
+      window.removeEventListener('orientationchange', debouncedMeasure);
+      vv?.removeEventListener('resize', debouncedMeasure);
     };
-  }, []);
+  }, [heroOriginDvh]);
 
   useEffect(() => {
     const maxBlur = isNarrow ? 3 : 5;
+    let raf = 0;
+    let lastBlurStep = -1;
 
     const applyScrollFx = () => {
+      raf = 0;
       const hero = document.getElementById('hero');
       const heroH = hero?.offsetHeight || window.innerHeight;
       const scrollRatio = Math.min(Math.max(window.scrollY / (heroH * 0.65), 0), 1);
-      const blurAmount = scrollRatio * maxBlur;
+      // Quantize blur to cut backdrop-filter thrashing on scroll
+      const blurStep = Math.round(scrollRatio * maxBlur * 2) / 2;
+      const blurAmount = blurStep;
 
       const veil = veilRef.current;
       if (!veil) return;
 
       veil.style.opacity = String(scrollRatio * 0.85);
-      veil.style.backdropFilter = blurAmount > 0.05 ? `blur(${blurAmount}px)` : 'none';
-      veil.style.webkitBackdropFilter = blurAmount > 0.05 ? `blur(${blurAmount}px)` : 'none';
+      if (blurStep !== lastBlurStep) {
+        lastBlurStep = blurStep;
+        veil.style.backdropFilter = blurAmount > 0.05 ? `blur(${blurAmount}px)` : 'none';
+        veil.style.webkitBackdropFilter = blurAmount > 0.05 ? `blur(${blurAmount}px)` : 'none';
+      }
+    };
+
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(applyScrollFx);
     };
 
     applyScrollFx();
-    window.addEventListener('scroll', applyScrollFx, { passive: true });
-    window.addEventListener('resize', applyScrollFx, { passive: true });
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
     return () => {
-      window.removeEventListener('scroll', applyScrollFx);
-      window.removeEventListener('resize', applyScrollFx);
+      if (raf) cancelAnimationFrame(raf);
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
     };
   }, [isNarrow]);
 
@@ -150,10 +210,13 @@ function App() {
   return (
     <div
       className="relative min-h-screen text-foreground selection:bg-primary/30"
-      style={{ '--hero-origin-y': `${centerYRatio * 100}%` }}
+      style={{ '--hero-origin-y': heroOriginDvh }}
     >
       {/* Fixed starfield — ring sized to the hero name */}
-      <div className="pointer-events-none fixed inset-0 -z-10 bg-black overflow-hidden">
+      <div
+        id="site-starfield"
+        className="pointer-events-none fixed inset-0 -z-10 bg-black overflow-hidden"
+      >
         <SiteStarfieldBackground
           isNarrow={isNarrow}
           starEscapeWidth={ring.escape}

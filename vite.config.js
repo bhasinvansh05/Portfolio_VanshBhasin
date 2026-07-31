@@ -12,6 +12,6 @@ export default defineConfig({
     },
   },
   server: {
-    allowedHosts: ['bureau-wings-brilliant-reliance.trycloudflare.com'],
+    allowedHosts: ['amend-org-hostel-increases.trycloudflare.com'],
   },
 })

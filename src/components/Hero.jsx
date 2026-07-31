@@ -8,12 +8,12 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative h-screen min-h-[100dvh] w-full overflow-hidden"
+      className="relative h-[100dvh] min-h-[100dvh] w-full overflow-hidden"
     >
-      {/* Name — locked to the shared circle origin (--hero-origin-y) */}
+      {/* Name — locked to shared viewport origin (--hero-origin-y in dvh) */}
       <h1
         className="absolute left-1/2 z-10 w-full max-w-5xl px-4 -translate-x-1/2 -translate-y-1/2 text-white text-center font-extrabold tracking-tight drop-shadow-[0_0_15px_rgba(0,0,0,1)] text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[10rem] lg:leading-none"
-        style={{ top: 'var(--hero-origin-y, 40%)' }}
+        style={{ top: 'var(--hero-origin-y, 36dvh)' }}
       >
         {portfolioData.hero.title}
       </h1>
@@ -21,15 +21,15 @@ export default function Hero() {
       {/* Bio — just below the name / circle center */}
       <p
         className="absolute left-1/2 z-10 w-full max-w-xl px-4 -translate-x-1/2 text-[#f5f5f5] text-center font-medium leading-relaxed drop-shadow-[0_0_10px_rgba(0,0,0,1)] text-base sm:text-lg md:text-2xl"
-        style={{ top: 'calc(var(--hero-origin-y, 40%) + clamp(2.75rem, 6vh, 5.5rem))' }}
+        style={{ top: 'calc(var(--hero-origin-y, 36dvh) + clamp(2.75rem, 6dvh, 5.5rem))' }}
       >
         {portfolioData.hero.bio}
       </p>
 
-      {/* Contact — below the circle, scales with viewport */}
+      {/* Contact — below the circle; clears bottom nav on small screens */}
       <div
         className="absolute left-1/2 z-10 flex w-full justify-center px-4 -translate-x-1/2"
-        style={{ top: 'calc(var(--hero-origin-y, 40%) + clamp(8rem, 26vh, 16rem))' }}
+        style={{ top: 'calc(var(--hero-origin-y, 36dvh) + clamp(12rem, 42dvh, 24rem))' }}
       >
         <LiquidButton
           className="text-white w-full max-w-[12rem] sm:w-48 cursor-pointer text-sm sm:text-base min-h-[48px]"

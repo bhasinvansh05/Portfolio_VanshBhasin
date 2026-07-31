@@ -21,6 +21,7 @@ export type StarfieldProps = {
 type Star = {
   orbital: number
   opacity: number
+  baseOpacity: number
   position: { x: number; y: number }
   originPosition: { x: number; y: number }
   rotation: number
@@ -30,6 +31,8 @@ type Star = {
   waveSpeed2: number
   wave1: number
   wave2: number
+  twinklePhase: number
+  twinkleSpeed: number
   id: number
 }
 
@@ -49,13 +52,33 @@ const Starfield = ({
   const containerRef = useRef<HTMLDivElement | null>(null)
   const starsRef = useRef<Star[]>([])
   const animationFrameRef = useRef<number | null>(null)
+  const centerYRatioRef = useRef(centerYRatio)
+  const voidWidthRef = useRef(voidWidth)
+  const starEscapeWidthRef = useRef(starEscapeWidth)
+  const starColorRef = useRef(starColor)
+
+  useEffect(() => {
+    centerYRatioRef.current = centerYRatio
+  }, [centerYRatio])
+
+  useEffect(() => {
+    voidWidthRef.current = voidWidth
+  }, [voidWidth])
+
+  useEffect(() => {
+    starEscapeWidthRef.current = starEscapeWidth
+  }, [starEscapeWidth])
+
+  useEffect(() => {
+    starColorRef.current = starColor
+  }, [starColor])
 
   useEffect(() => {
     const canvas = canvasRef.current
     const container = containerRef.current
     if (!canvas || !container) return
 
-    const context = canvas.getContext("2d")
+    const context = canvas.getContext("2d", { alpha: false })
     if (!context) return
 
     let size = { x: 0, y: 0 }
@@ -63,21 +86,68 @@ const Starfield = ({
     let data: Uint32Array
     const startTime = Date.now()
     let currentTime = 0
+    let lastOrigin = { x: 0, y: 0 }
+    let hasOrigin = false
 
-    const origin = () => ({
+    const readOrigin = () => ({
       x: size.x / 2,
-      y: size.y * centerYRatio,
+      y: size.y * centerYRatioRef.current,
     })
 
+    const origin = () => {
+      const next = readOrigin()
+      if (hasOrigin) {
+        const dx = next.x - lastOrigin.x
+        const dy = next.y - lastOrigin.y
+        if (dx !== 0 || dy !== 0) {
+          for (const star of starsRef.current) {
+            star.position.x += dx
+            star.position.y += dy
+            star.realPosition.x += dx
+            star.realPosition.y += dy
+            star.originPosition.x += dx
+            star.originPosition.y += dy
+          }
+        }
+      }
+      lastOrigin = next
+      hasOrigin = true
+      return next
+    }
+
     const setSize = () => {
-      size.x = container.clientWidth
-      size.y = container.clientHeight
-      canvas.width = size.x
-      canvas.height = size.y
+      const nextX = container.clientWidth
+      const nextY = container.clientHeight
+      if (nextX === size.x && nextY === size.y) return
+
+      const oldX = size.x
+      const oldY = size.y
+      const hadStars = starsRef.current.length > 0
+      // Soft-resize for small iOS chrome changes; hard rebuild only on big layout shifts
+      const significant =
+        !hadStars ||
+        !oldX ||
+        !oldY ||
+        Math.abs(nextX - oldX) > 48 ||
+        Math.abs(nextY - oldY) / Math.max(oldY, 1) > 0.12
+
+      if (hadStars && !significant) {
+        lastOrigin = { x: oldX / 2, y: oldY * centerYRatioRef.current }
+        hasOrigin = true
+      }
+
+      size.x = nextX
+      size.y = nextY
+      canvas.width = nextX
+      canvas.height = nextY
 
       imagedata = context.createImageData(size.x, size.y)
       data = new Uint32Array(imagedata.data.buffer)
-      starsRef.current = []
+
+      if (significant) {
+        starsRef.current = []
+        hasOrigin = false
+      }
     }
 
     const rotate = (cx: number, cy: number, x: number, y: number, radians: number) => {
@@ -91,18 +161,17 @@ const Starfield = ({
     const createStar = () => {
       const star = {} as Star
       const { x: cx, y: cy } = origin()
-      // Keep a clear center void, then ring out to starEscapeWidth
-      const inner = Math.max(8, voidWidth)
-      const outer = Math.max(inner + 24, starEscapeWidth)
+      const inner = Math.max(8, voidWidthRef.current)
+      const outer = Math.max(inner + 24, starEscapeWidthRef.current)
       const rands = [
         Math.random() * ((outer - inner) / 2) + inner,
         Math.random() * ((outer - inner) / 2) + (inner + outer) / 2,
       ]
       star.orbital = rands.reduce((p, c) => p + c, 0) / rands.length
-      star.opacity = Math.floor(
-        (1 - (star.orbital - inner) / Math.max(1, outer - inner)) * maxOpacity +
-          Math.random() * 80,
+      star.baseOpacity = Math.floor(
+        (1 - (star.orbital - inner) / Math.max(1, outer - inner)) * maxOpacity,
       )
+      star.opacity = star.baseOpacity
       star.position = {
         x: cx,
         y: cy + star.orbital,
@@ -117,11 +186,13 @@ const Starfield = ({
         star.rotation,
       )
       star.realPosition = { ...star.position }
-      star.rSpeed = Math.random() * rotationSpeed + star.opacity / 20000
+      star.rSpeed = Math.random() * rotationSpeed + star.baseOpacity / 20000
       star.waveSpeed1 = Math.random() * waveSpeed
       star.waveSpeed2 = Math.random() * waveSpeed
       star.wave1 = Math.sin(currentTime * star.waveSpeed1) * waveFrequency
       star.wave2 = Math.sin(currentTime * star.waveSpeed2) * waveFrequency
+      star.twinklePhase = Math.random() * Math.PI * 2
+      star.twinkleSpeed = 0.015 + Math.random() * 0.025
       star.id = starsRef.current.length
       starsRef.current.push(star)
     }
@@ -129,21 +200,16 @@ const Starfield = ({
     const plot = (x: number, y: number, opacity: number) => {
       const index = Math.floor(y) * size.x + Math.floor(x)
       if (index < 0 || index >= data.length) return
-      data[index] =
-        (opacity << 24) | (starColor.b << 16) | (starColor.g << 8) | starColor.r
+      const c = starColorRef.current
+      const a = opacity / 255
+      // Premultiply onto opaque black buffer so twinkle works with alpha:false
+      const r = Math.floor(c.r * a)
+      const g = Math.floor(c.g * a)
+      const b = Math.floor(c.b * a)
+      data[index] = (255 << 24) | (b << 16) | (g << 8) | r
     }
 
-    const drawStar = (star: Star) => {
-      const { x: cx, y: cy } = origin()
-      const prevX = star.realPosition.x + star.wave2
-      const prevY = star.realPosition.y + star.wave1
-      const prevIndex = Math.floor(prevY) * size.x + Math.floor(prevX)
-      if (prevIndex >= 0 && prevIndex < data.length) {
-        data[prevIndex] = 0
-      }
-      const prevIndex2 = Math.floor(prevY) * size.x + Math.floor(prevX + 1)
-      if (prevIndex2 >= 0 && prevIndex2 < data.length) data[prevIndex2] = 0
-
+    const drawStar = (star: Star, cx: number, cy: number) => {
       star.wave1 = Math.sin(currentTime * star.waveSpeed1) * waveFrequency
       star.wave2 = Math.sin(currentTime * star.waveSpeed2) * waveFrequency
       star.realPosition = rotate(
@@ -153,16 +219,15 @@ const Starfield = ({
         star.position.y,
         star.rSpeed * currentTime,
       )
-      const inner = Math.max(8, voidWidth)
-      const outer = Math.max(inner + 24, starEscapeWidth)
-      star.opacity = Math.floor(
-        (1 - (star.orbital - inner) / Math.max(1, outer - inner)) * maxOpacity +
-          Math.random() * 80,
-      )
+
+      // Smooth twinkle — no Math.random per frame (that caused visible flicker)
+      const twinkle =
+        0.72 + 0.28 * Math.sin(currentTime * star.twinkleSpeed + star.twinklePhase)
+      const op = Math.min(255, Math.max(0, Math.floor(star.baseOpacity * twinkle)))
+      star.opacity = op
 
       const x = star.realPosition.x + star.wave2
       const y = star.realPosition.y + star.wave1
-      const op = Math.min(255, Math.max(0, star.opacity))
       plot(x, y, op)
       plot(x + 1, y, Math.floor(op * 0.7))
       plot(x, y + 1, Math.floor(op * 0.55))
@@ -171,7 +236,10 @@ const Starfield = ({
     const render = () => {
       currentTime = (Date.now() - startTime) / 10
 
-      data.fill(0)
+      // Fill black once (alpha:false context) — cheaper and avoids clear flicker
+      data.fill(0xff000000)
+
+      const { x: cx, y: cy } = origin()
 
       if (starsRef.current.length < starCount) {
         for (let i = 0; i < Math.min(160, starCount - starsRef.current.length); i++) {
@@ -180,7 +248,7 @@ const Starfield = ({
       }
 
       for (const star of starsRef.current) {
-        drawStar(star)
+        drawStar(star, cx, cy)
       }
 
       context.putImageData(imagedata, 0, 0)
@@ -190,32 +258,32 @@ const Starfield = ({
     setSize()
     render()
 
-    const resizeHandler = () => setSize()
+    let resizeRaf = 0
+    const resizeHandler = () => {
+      if (resizeRaf) return
+      resizeRaf = requestAnimationFrame(() => {
+        resizeRaf = 0
+        setSize()
+      })
+    }
     window.addEventListener("resize", resizeHandler)
+    window.visualViewport?.addEventListener("resize", resizeHandler)
 
     return () => {
       window.removeEventListener("resize", resizeHandler)
+      window.visualViewport?.removeEventListener("resize", resizeHandler)
+      if (resizeRaf) cancelAnimationFrame(resizeRaf)
       if (animationFrameRef.current != null) {
         cancelAnimationFrame(animationFrameRef.current)
       }
     }
-  }, [
-    starCount,
-    waveFrequency,
-    starEscapeWidth,
-    voidWidth,
-    starColor,
-    maxOpacity,
-    rotationSpeed,
-    waveSpeed,
-    centerYRatio,
-  ])
+  }, [starCount, waveFrequency, maxOpacity, rotationSpeed, waveSpeed])
 
   return (
     <div
       ref={containerRef}
       className={className}
-      style={{ width: "100%", height: "100%" }}
+      style={{ width: "100%", height: "100%", transform: "translateZ(0)" }}
     >
       <canvas ref={canvasRef} className="block h-full w-full" />
     </div>
