@@ -69,7 +69,7 @@ Hey! I'm Vansh. Whether I'm teaching drones how to spot traffic, mapping 5G netw
 
 ## 📬 Contact
 
-- **Email:** [vansh05@my.yorku.ca](mailto:vansh05@my.yorku.ca)
+- **Email:** [me@vanshbhasin.dev](mailto:me@vanshbhasin.dev)
 - **LinkedIn:** [linkedin.com/in/vansh05](https://www.linkedin.com/in/vansh05/)
 - **GitHub:** [github.com/bhasinvansh05](https://github.com/bhasinvansh05)
 
