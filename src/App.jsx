@@ -17,8 +17,20 @@ import Resume from './components/Resume';
 import Contact from './components/Contact';
 import { Starfield } from './components/ui/starfield';
 import GooeyNav from './components/ui/GooeyNav';
+import FeaturesDemo from './components/demo/FeaturesDemo';
 
 const STAR_COLOR = { r: 245, g: 248, b: 255 };
+
+function isFeaturesDemoRoute() {
+  if (typeof window === 'undefined') return false;
+  const hash = window.location.hash || '';
+  const path = window.location.pathname || '';
+  return (
+    hash === '#features-demo' ||
+    hash.startsWith('#features-demo') ||
+    path.endsWith('/demo')
+  );
+}
 
 /** Isolated so scroll/resize sizing never remounts the canvas mid-frame. */
 const SiteStarfieldBackground = memo(function SiteStarfieldBackground({
@@ -55,12 +67,24 @@ function viewportHeight() {
 }
 
 function App() {
+  const [showFeaturesDemo, setShowFeaturesDemo] = useState(() => isFeaturesDemoRoute());
   const [isNarrow, setIsNarrow] = useState(false);
   const [ring, setRing] = useState({ escape: 340, void: 110 });
   const [centerYRatio, setCenterYRatio] = useState(0.36);
   const [heroOriginDvh, setHeroOriginDvh] = useState('36dvh');
   const veilRef = useRef(null);
   const lastCenterYRef = useRef(0.36);
+
+  useEffect(() => {
+    const syncRoute = () => setShowFeaturesDemo(isFeaturesDemoRoute());
+    syncRoute();
+    window.addEventListener('hashchange', syncRoute);
+    window.addEventListener('popstate', syncRoute);
+    return () => {
+      window.removeEventListener('hashchange', syncRoute);
+      window.removeEventListener('popstate', syncRoute);
+    };
+  }, []);
 
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 767px)');
@@ -206,6 +230,10 @@ function App() {
     { label: 'Resume', href: '#resume', icon: FileText },
     { label: 'Contact', href: '#contact', icon: Mail },
   ];
+
+  if (showFeaturesDemo) {
+    return <FeaturesDemo />;
+  }
 
   return (
     <div

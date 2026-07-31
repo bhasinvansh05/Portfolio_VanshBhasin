@@ -28,6 +28,14 @@ export default function Contact() {
             </button>
           </div>
         </div>
+        <p className="mt-10 sm:mt-14">
+          <a
+            href="#features-demo"
+            className="text-xs sm:text-sm text-muted-foreground/60 hover:text-muted-foreground transition-colors underline-offset-4 hover:underline tracking-wide"
+          >
+            Features Lab
+          </a>
+        </p>
       </div>
     </section>
   );

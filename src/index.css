@@ -82,3 +82,24 @@ body {
   }
 }
 
+/* Features Lab demo page */
+.font-demo-display {
+  font-family: 'Syne', ui-sans-serif, sans-serif;
+}
+
+.font-demo-body {
+  font-family: 'Figtree', ui-sans-serif, sans-serif;
+}
+
+.demo-page {
+  font-family: 'Figtree', ui-sans-serif, sans-serif;
+}
+
+.demo-page--recruiter .demo-atmosphere {
+  display: none;
+}
+
+.demo-page details summary::-webkit-details-marker {
+  display: none;
+}
+
