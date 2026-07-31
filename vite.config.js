@@ -12,6 +12,6 @@ export default defineConfig({
     },
   },
   server: {
-    allowedHosts: ['amend-org-hostel-increases.trycloudflare.com'],
+    allowedHosts: true,
   },
 })
