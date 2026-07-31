@@ -96,7 +96,7 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
               data-timeline-item
               className="flex justify-start pt-8 sm:pt-12 md:pt-24 md:gap-10"
             >
-              <div className="sticky flex flex-col md:flex-row z-40 items-center top-28 sm:top-32 md:top-36 self-start max-w-xs lg:max-w-sm md:w-full">
+              <div className="sticky flex flex-col md:flex-row z-40 items-center top-4 sm:top-32 md:top-36 self-start max-w-xs lg:max-w-sm md:w-full">
                 <div
                   className={cn(
                     "h-8 sm:h-10 absolute left-2 sm:left-3 w-8 sm:w-10 rounded-full flex items-center justify-center border transition-all duration-500",

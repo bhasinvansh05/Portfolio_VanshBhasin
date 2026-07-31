@@ -1,4 +1,13 @@
 import React, { useState, useEffect, useRef, memo } from 'react';
+import {
+  Home,
+  User,
+  FolderKanban,
+  Briefcase,
+  Code2,
+  FileText,
+  Mail,
+} from 'lucide-react';
 import Hero from './components/Hero';
 import About from './components/About';
 import WorkExperience from './components/WorkExperience';
@@ -14,10 +23,11 @@ const SiteStarfieldBackground = memo(function SiteStarfieldBackground({
   isNarrow,
   starEscapeWidth,
   voidWidth,
+  centerYRatio,
 }) {
   return (
     <Starfield
-      starCount={isNarrow ? 12000 : 22000}
+      starCount={isNarrow ? 5500 : 22000}
       waveFrequency={isNarrow ? 14 : 18}
       starEscapeWidth={starEscapeWidth}
       voidWidth={voidWidth}
@@ -25,14 +35,24 @@ const SiteStarfieldBackground = memo(function SiteStarfieldBackground({
       maxOpacity={255}
       rotationSpeed={isNarrow ? 0.00025 : 0.0004}
       waveSpeed={isNarrow ? 0.006 : 0.009}
+      centerYRatio={centerYRatio}
       className="h-full w-full"
     />
   );
 });
 
+/** Upper-middle circle origin by breakpoint — shared by starfield + hero. */
+function getHeroOriginY(width) {
+  if (width < 640) return 0.36;
+  if (width < 768) return 0.38;
+  if (width < 1024) return 0.40;
+  return 0.42;
+}
+
 function App() {
   const [isNarrow, setIsNarrow] = useState(false);
   const [ring, setRing] = useState({ escape: 340, void: 110 });
+  const [centerYRatio, setCenterYRatio] = useState(0.4);
   const veilRef = useRef(null);
 
   useEffect(() => {
@@ -41,6 +61,13 @@ function App() {
     const handler = (e) => setIsNarrow(e.matches);
     mq.addEventListener('change', handler);
     return () => mq.removeEventListener('change', handler);
+  }, []);
+
+  useEffect(() => {
+    const updateOrigin = () => setCenterYRatio(getHeroOriginY(window.innerWidth));
+    updateOrigin();
+    window.addEventListener('resize', updateOrigin);
+    return () => window.removeEventListener('resize', updateOrigin);
   }, []);
 
   // Size the star ring so it surrounds the hero name
@@ -111,23 +138,27 @@ function App() {
   }, [isNarrow]);
 
   const navItems = [
-    { label: 'Home', href: '#hero' },
-    { label: 'About', href: '#about' },
-    { label: 'Projects', href: '#projects' },
-    { label: 'Experience', href: '#experience' },
-    { label: 'Skills', href: '#skills' },
-    { label: 'Resume', href: '#resume' },
-    { label: 'Contact', href: '#contact' },
+    { label: 'Home', href: '#hero', icon: Home },
+    { label: 'About', href: '#about', icon: User },
+    { label: 'Projects', href: '#projects', icon: FolderKanban },
+    { label: 'Experience', href: '#experience', icon: Briefcase },
+    { label: 'Skills', href: '#skills', icon: Code2 },
+    { label: 'Resume', href: '#resume', icon: FileText },
+    { label: 'Contact', href: '#contact', icon: Mail },
   ];
 
   return (
-    <div className="relative min-h-screen text-foreground selection:bg-primary/30">
+    <div
+      className="relative min-h-screen text-foreground selection:bg-primary/30"
+      style={{ '--hero-origin-y': `${centerYRatio * 100}%` }}
+    >
       {/* Fixed starfield — ring sized to the hero name */}
       <div className="pointer-events-none fixed inset-0 -z-10 bg-black overflow-hidden">
         <SiteStarfieldBackground
           isNarrow={isNarrow}
           starEscapeWidth={ring.escape}
           voidWidth={ring.void}
+          centerYRatio={centerYRatio}
         />
       </div>
 
@@ -146,12 +177,12 @@ function App() {
       />
 
       <main className="relative z-0 w-full overflow-x-hidden">
-        <div className="fixed inset-x-0 bottom-0 sm:top-0 sm:bottom-auto z-50 flex justify-center overflow-x-clip mb-4 sm:mb-0 sm:pt-4 md:pt-6 pb-[env(safe-area-inset-bottom)] sm:pb-0 px-2">
+        <div className="fixed inset-x-0 bottom-0 sm:top-0 sm:bottom-auto z-50 flex justify-center mb-4 sm:mb-0 sm:pt-4 md:pt-6 pb-[env(safe-area-inset-bottom)] sm:pb-0 px-2">
           <GooeyNav
             items={navItems}
-            particleCount={15}
-            particleDistances={[90, 10]}
-            particleR={100}
+            particleCount={isNarrow ? 8 : 15}
+            particleDistances={isNarrow ? [50, 8] : [90, 10]}
+            particleR={isNarrow ? 60 : 100}
             initialActiveIndex={0}
             animationTime={600}
             timeVariance={300}

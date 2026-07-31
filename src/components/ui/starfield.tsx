@@ -13,6 +13,8 @@ export type StarfieldProps = {
   maxOpacity?: number
   rotationSpeed?: number
   waveSpeed?: number
+  /** Vertical origin as a fraction of canvas height (0.5 = center). Lower = higher on screen. */
+  centerYRatio?: number
   className?: string
 }
 
@@ -40,6 +42,7 @@ const Starfield = ({
   maxOpacity = 255,
   rotationSpeed = 0.0005,
   waveSpeed = 0.01,
+  centerYRatio = 0.5,
   className,
 }: StarfieldProps) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
@@ -60,6 +63,11 @@ const Starfield = ({
     let data: Uint32Array
     const startTime = Date.now()
     let currentTime = 0
+
+    const origin = () => ({
+      x: size.x / 2,
+      y: size.y * centerYRatio,
+    })
 
     const setSize = () => {
       size.x = container.clientWidth
@@ -82,6 +90,7 @@ const Starfield = ({
 
     const createStar = () => {
       const star = {} as Star
+      const { x: cx, y: cy } = origin()
       // Keep a clear center void, then ring out to starEscapeWidth
       const inner = Math.max(8, voidWidth)
       const outer = Math.max(inner + 24, starEscapeWidth)
@@ -95,14 +104,14 @@ const Starfield = ({
           Math.random() * 80,
       )
       star.position = {
-        x: size.x / 2,
-        y: size.y / 2 + star.orbital,
+        x: cx,
+        y: cy + star.orbital,
       }
       star.originPosition = { ...star.position }
       star.rotation = Math.PI * (Math.random() * 2)
       star.position = rotate(
-        size.x / 2,
-        size.y / 2,
+        cx,
+        cy,
         star.position.x,
         star.position.y,
         star.rotation,
@@ -125,6 +134,7 @@ const Starfield = ({
     }
 
     const drawStar = (star: Star) => {
+      const { x: cx, y: cy } = origin()
       const prevX = star.realPosition.x + star.wave2
       const prevY = star.realPosition.y + star.wave1
       const prevIndex = Math.floor(prevY) * size.x + Math.floor(prevX)
@@ -137,8 +147,8 @@ const Starfield = ({
       star.wave1 = Math.sin(currentTime * star.waveSpeed1) * waveFrequency
       star.wave2 = Math.sin(currentTime * star.waveSpeed2) * waveFrequency
       star.realPosition = rotate(
-        size.x / 2,
-        size.y / 2,
+        cx,
+        cy,
         star.position.x,
         star.position.y,
         star.rSpeed * currentTime,
@@ -198,6 +208,7 @@ const Starfield = ({
     maxOpacity,
     rotationSpeed,
     waveSpeed,
+    centerYRatio,
   ])
 
   return (

@@ -93,7 +93,9 @@ const GooeyNav = ({
     };
     Object.assign(filterRef.current.style, styles);
     Object.assign(textRef.current.style, styles);
-    textRef.current.innerText = element.innerText;
+    // Clone link content so icon-only mobile items keep the gooey text effect in sync
+    const link = element.querySelector('a');
+    textRef.current.innerHTML = link?.innerHTML ?? element.dataset.label ?? element.innerText;
   }, []);
 
   const syncActiveEffect = useCallback((index, { withParticles = false } = {}) => {
@@ -231,17 +233,30 @@ const GooeyNav = ({
     >
       <nav>
         <ul ref={navRef}>
-          {items.map((item, index) => (
-            <li
-              key={index}
-              className={activeIndex === index ? 'active' : ''}
-              onClick={e => handleClick(e, index)}
-            >
-              <a href={item.href} onKeyDown={e => handleKeyDown(e, index)}>
-                {item.label}
-              </a>
-            </li>
-          ))}
+          {items.map((item, index) => {
+            const Icon = item.icon;
+            return (
+              <li
+                key={index}
+                className={activeIndex === index ? 'active' : ''}
+                data-label={item.label}
+                onClick={e => handleClick(e, index)}
+              >
+                <a
+                  href={item.href}
+                  aria-label={item.label}
+                  onKeyDown={e => handleKeyDown(e, index)}
+                >
+                  {Icon ? (
+                    <span className="nav-icon" aria-hidden="true">
+                      <Icon size={20} strokeWidth={2.5} />
+                    </span>
+                  ) : null}
+                  <span className="nav-label">{item.label}</span>
+                </a>
+              </li>
+            );
+          })}
         </ul>
       </nav>
       <span className="effect filter" ref={filterRef} />

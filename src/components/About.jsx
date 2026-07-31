@@ -58,7 +58,7 @@ export default function About() {
                 animationNum={1}
                 timelineRef={heroRef}
                 customVariants={textVariants}
-                className="text-amber-500 border-2 border-amber-500/40 inline-block border-dotted px-2 rounded-md mx-1 bg-amber-500/5 shadow-[0_0_15px_rgba(245,158,11,0.1)]"
+                className="text-amber-500 border-2 border-amber-500/40 inline border-dotted px-1.5 sm:px-2 rounded-md mx-0.5 sm:mx-1 bg-amber-500/5 shadow-[0_0_15px_rgba(245,158,11,0.1)]"
               >
                 outside a demo
               </TimelineContent>
@@ -70,7 +70,7 @@ export default function About() {
                 animationNum={2}
                 timelineRef={heroRef}
                 customVariants={textVariants}
-                className="text-cyan-400 border-2 border-cyan-400/40 inline-block border-dotted px-2 rounded-md mx-1 bg-cyan-400/5 shadow-[0_0_15px_rgba(34,211,238,0.1)]"
+                className="text-cyan-400 border-2 border-cyan-400/40 inline border-dotted px-1.5 sm:px-2 rounded-md mx-0.5 sm:mx-1 bg-cyan-400/5 shadow-[0_0_15px_rgba(34,211,238,0.1)]"
               >
                 YOLO models
               </TimelineContent>{" "}
@@ -82,7 +82,7 @@ export default function About() {
                 animationNum={3}
                 timelineRef={heroRef}
                 customVariants={textVariants}
-                className="text-rose-500 border-2 border-rose-500/40 inline-block border-dotted px-2 rounded-md mx-1 bg-rose-500/5 shadow-[0_0_15px_rgba(244,63,94,0.1)]"
+                className="text-rose-500 border-2 border-rose-500/40 inline border-dotted px-1.5 sm:px-2 rounded-md mx-0.5 sm:mx-1 bg-rose-500/5 shadow-[0_0_15px_rgba(244,63,94,0.1)]"
               >
                 Formula 1
               </TimelineContent>{" "}
@@ -92,7 +92,7 @@ export default function About() {
                 animationNum={4}
                 timelineRef={heroRef}
                 customVariants={textVariants}
-                className="text-emerald-400 border-2 border-emerald-400/40 inline-block border-dotted px-2 rounded-md mx-1 bg-emerald-400/5 shadow-[0_0_15px_rgba(52,211,153,0.1)]"
+                className="text-emerald-400 border-2 border-emerald-400/40 inline border-dotted px-1.5 sm:px-2 rounded-md mx-0.5 sm:mx-1 bg-emerald-400/5 shadow-[0_0_15px_rgba(52,211,153,0.1)]"
               >
                 fragrances
               </TimelineContent>

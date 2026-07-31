@@ -3,7 +3,7 @@ import { Github, Linkedin, Mail } from 'lucide-react';
 
 export default function Contact() {
   return (
-    <section id="contact" className="min-h-[60vh] flex flex-col justify-center px-4 sm:px-6 py-16 sm:py-24 pb-28 sm:pb-24 relative z-10">
+    <section id="contact" className="min-h-[60vh] flex flex-col justify-center px-4 sm:px-6 py-16 sm:py-24 pb-32 sm:pb-24 relative z-10">
       <div className="max-w-4xl mx-auto w-full text-center">
         <h2 className="text-2xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-foreground mb-4 sm:mb-6">Let's Connect</h2>
         <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 sm:mb-12 max-w-2xl mx-auto leading-relaxed px-2">
