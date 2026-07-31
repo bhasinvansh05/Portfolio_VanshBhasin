@@ -15,6 +15,8 @@ export type StarfieldProps = {
   waveSpeed?: number
   /** Vertical origin as a fraction of canvas height (0.5 = center). Lower = higher on screen. */
   centerYRatio?: number
+  /** Freeze the last frame — avoids compositor flicker under CSS blur / backdrop samples. */
+  paused?: boolean
   className?: string
 }
 
@@ -46,6 +48,7 @@ const Starfield = ({
   rotationSpeed = 0.0005,
   waveSpeed = 0.01,
   centerYRatio = 0.5,
+  paused = false,
   className,
 }: StarfieldProps) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
@@ -56,6 +59,8 @@ const Starfield = ({
   const voidWidthRef = useRef(voidWidth)
   const starEscapeWidthRef = useRef(starEscapeWidth)
   const starColorRef = useRef(starColor)
+  const pausedRef = useRef(paused)
+  const kickRef = useRef<(() => void) | null>(null)
 
   useEffect(() => {
     centerYRatioRef.current = centerYRatio
@@ -74,6 +79,13 @@ const Starfield = ({
   }, [starColor])
 
   useEffect(() => {
+    pausedRef.current = paused
+    if (!paused) {
+      kickRef.current?.()
+    }
+  }, [paused])
+
+  useEffect(() => {
     const canvas = canvasRef.current
     const container = containerRef.current
     if (!canvas || !container) return
@@ -86,8 +98,11 @@ const Starfield = ({
     let data: Uint32Array
     const startTime = Date.now()
     let currentTime = 0
+    let pausedAt = 0
+    let pauseOffset = 0
     let lastOrigin = { x: 0, y: 0 }
     let hasOrigin = false
+    let wasPaused = false
 
     const readOrigin = () => ({
       x: size.x / 2,
@@ -234,7 +249,24 @@ const Starfield = ({
     }
 
     const render = () => {
-      currentTime = (Date.now() - startTime) / 10
+      animationFrameRef.current = null
+
+      if (pausedRef.current) {
+        if (!wasPaused) {
+          pausedAt = Date.now()
+          wasPaused = true
+        }
+        // Hold the last painted frame — no putImageData while CSS blur / section
+        // backdrop-blur is sampling this layer (that was the flicker).
+        return
+      }
+
+      if (wasPaused) {
+        pauseOffset += Date.now() - pausedAt
+        wasPaused = false
+      }
+
+      currentTime = (Date.now() - startTime - pauseOffset) / 10
 
       // Fill black once (alpha:false context) — cheaper and avoids clear flicker
       data.fill(0xff000000)
@@ -255,6 +287,13 @@ const Starfield = ({
       animationFrameRef.current = requestAnimationFrame(render)
     }
 
+    const kick = () => {
+      if (animationFrameRef.current == null && !pausedRef.current) {
+        animationFrameRef.current = requestAnimationFrame(render)
+      }
+    }
+    kickRef.current = kick
+
     setSize()
     render()
 
@@ -263,13 +302,25 @@ const Starfield = ({
       if (resizeRaf) return
       resizeRaf = requestAnimationFrame(() => {
         resizeRaf = 0
+        const stayPaused = pausedRef.current
         setSize()
+        if (stayPaused) {
+          // Canvas resize clears pixels — paint one frozen frame, then stay paused.
+          pausedRef.current = false
+          render()
+          pausedRef.current = true
+          wasPaused = true
+          pausedAt = Date.now()
+        } else {
+          kick()
+        }
       })
     }
     window.addEventListener("resize", resizeHandler)
     window.visualViewport?.addEventListener("resize", resizeHandler)
 
     return () => {
+      kickRef.current = null
       window.removeEventListener("resize", resizeHandler)
       window.visualViewport?.removeEventListener("resize", resizeHandler)
       if (resizeRaf) cancelAnimationFrame(resizeRaf)

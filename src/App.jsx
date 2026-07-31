@@ -26,6 +26,7 @@ const SiteStarfieldBackground = memo(function SiteStarfieldBackground({
   starEscapeWidth,
   voidWidth,
   centerYRatio,
+  paused,
 }) {
   return (
     <Starfield
@@ -38,6 +39,7 @@ const SiteStarfieldBackground = memo(function SiteStarfieldBackground({
       rotationSpeed={isNarrow ? 0.00025 : 0.0004}
       waveSpeed={isNarrow ? 0.006 : 0.009}
       centerYRatio={centerYRatio}
+      paused={paused}
       className="h-full w-full"
     />
   );
@@ -59,7 +61,9 @@ function App() {
   const [ring, setRing] = useState({ escape: 340, void: 110 });
   const [centerYRatio, setCenterYRatio] = useState(0.36);
   const [heroOriginDvh, setHeroOriginDvh] = useState('36dvh');
+  const [fieldPaused, setFieldPaused] = useState(false);
   const veilRef = useRef(null);
+  const fieldBlurRef = useRef(null);
   const lastCenterYRef = useRef(0.36);
 
   useEffect(() => {
@@ -158,27 +162,43 @@ function App() {
   }, [heroOriginDvh]);
 
   useEffect(() => {
+    // Soften the field after the hero. Prefer CSS filter on the canvas layer —
+    // backdrop-filter over a live canvas re-samples every paint and flickers.
+    // Also freeze the starfield once blur engages so section backdrop-blurs
+    // sample a still frame instead of a 60fps canvas.
     const maxBlur = isNarrow ? 3 : 5;
     let raf = 0;
     let lastBlurStep = -1;
+    let lastVeilOpacity = -1;
+    let lastPaused = false;
 
     const applyScrollFx = () => {
       raf = 0;
       const hero = document.getElementById('hero');
       const heroH = hero?.offsetHeight || window.innerHeight;
       const scrollRatio = Math.min(Math.max(window.scrollY / (heroH * 0.65), 0), 1);
-      // Quantize blur to cut backdrop-filter thrashing on scroll
-      const blurStep = Math.round(scrollRatio * maxBlur * 2) / 2;
-      const blurAmount = blurStep;
+      // Coarser steps — fewer compositor invalidations while scrolling
+      const blurStep = Math.round(scrollRatio * maxBlur);
+      const veilOpacity = Math.round(scrollRatio * 0.55 * 20) / 20;
+      const shouldPause = scrollRatio > 0.08;
 
+      const field = fieldBlurRef.current;
       const veil = veilRef.current;
-      if (!veil) return;
 
-      veil.style.opacity = String(scrollRatio * 0.85);
-      if (blurStep !== lastBlurStep) {
+      if (field && blurStep !== lastBlurStep) {
         lastBlurStep = blurStep;
-        veil.style.backdropFilter = blurAmount > 0.05 ? `blur(${blurAmount}px)` : 'none';
-        veil.style.webkitBackdropFilter = blurAmount > 0.05 ? `blur(${blurAmount}px)` : 'none';
+        // Keep filter always on so enabling blur doesn't promote a new layer mid-scroll
+        field.style.filter = `blur(${blurStep}px)`;
+      }
+
+      if (veil && veilOpacity !== lastVeilOpacity) {
+        lastVeilOpacity = veilOpacity;
+        veil.style.opacity = String(veilOpacity);
+      }
+
+      if (shouldPause !== lastPaused) {
+        lastPaused = shouldPause;
+        setFieldPaused(shouldPause);
       }
     };
 
@@ -212,30 +232,35 @@ function App() {
       className="relative min-h-screen text-foreground selection:bg-primary/30"
       style={{ '--hero-origin-y': heroOriginDvh }}
     >
-      {/* Fixed starfield — ring sized to the hero name */}
+      {/* Fixed starfield — ring sized to the hero name.
+          Outer stays opaque black; inner gets filter:blur so soft edges don't flash. */}
       <div
         id="site-starfield"
         className="pointer-events-none fixed inset-0 -z-10 bg-black overflow-hidden"
       >
-        <SiteStarfieldBackground
-          isNarrow={isNarrow}
-          starEscapeWidth={ring.escape}
-          voidWidth={ring.void}
-          centerYRatio={centerYRatio}
-        />
+        <div
+          ref={fieldBlurRef}
+          className="h-full w-full"
+          style={{ transform: 'translateZ(0)', filter: 'blur(0px)', willChange: 'filter' }}
+        >
+          <SiteStarfieldBackground
+            isNarrow={isNarrow}
+            starEscapeWidth={ring.escape}
+            voidWidth={ring.void}
+            centerYRatio={centerYRatio}
+            paused={fieldPaused}
+          />
+        </div>
       </div>
 
-      {/* Soft blur veil once past the hero — keeps the field visible */}
+      {/* Soft darken once past the hero — no backdrop-filter (that flickered over the canvas) */}
       <div
         ref={veilRef}
         aria-hidden="true"
-        className="pointer-events-none fixed inset-0 -z-[5]"
+        className="pointer-events-none fixed inset-0 -z-[5] bg-black"
         style={{
           opacity: 0,
-          backgroundColor: 'rgba(0,0,0,0.001)',
-          backdropFilter: 'blur(0px)',
-          WebkitBackdropFilter: 'blur(0px)',
-          willChange: 'opacity, backdrop-filter',
+          willChange: 'opacity',
         }}
       />
 
