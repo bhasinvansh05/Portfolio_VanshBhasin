@@ -45,6 +45,8 @@ export function DemoModeProvider({ children }) {
     } catch {
       /* ignore */
     }
+    // Tall sticky stack can leave scroll past content after layout swap
+    requestAnimationFrame(() => window.scrollTo(0, 0));
   };
 
   const toggleMode = () => setMode(mode === 'recruiter' ? 'cinematic' : 'recruiter');

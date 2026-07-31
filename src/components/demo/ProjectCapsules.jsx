@@ -1,9 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useDemoMode } from './DemoModeContext';
-
-gsap.registerPlugin(ScrollTrigger);
 
 const PROJECTS = [
   {
@@ -32,13 +28,74 @@ const PROJECTS = [
   },
 ];
 
+/** Map scroll through the sticky stack → which capsule is open and how far. */
+function progressFromScroll(sectionEl) {
+  if (!sectionEl) return { active: 0, openPct: 0 };
+  const rect = sectionEl.getBoundingClientRect();
+  const total = Math.max(1, sectionEl.offsetHeight - window.innerHeight);
+  const scrolled = Math.min(total, Math.max(0, -rect.top));
+  const p = scrolled / total;
+  const seg = 1 / PROJECTS.length;
+  const idx = Math.min(PROJECTS.length - 1, Math.floor(p / seg + 1e-6));
+  const local = (p - idx * seg) / seg;
+  return { active: idx, openPct: Math.round(Math.min(1, Math.max(0, local)) * 100) };
+}
+
+function capsuleStyle(i, active, openPct, isMobile) {
+  const isActive = i === active;
+  const isPast = i < active;
+  const t = isActive ? openPct / 100 : isPast ? 1 : 0;
+
+  if (isPast) {
+    return {
+      clipPath: isMobile
+        ? 'inset(8% 4% 70% 4% round 18px)'
+        : 'inset(6% 6% 72% 6% round 22px)',
+      transform: isMobile
+        ? 'scale(0.96)'
+        : 'perspective(1200px) rotateX(-10deg) scale(0.94)',
+      opacity: 0.3,
+      zIndex: PROJECTS.length - i,
+    };
+  }
+
+  if (!isActive) {
+    return {
+      clipPath: isMobile
+        ? 'inset(42% 6% 42% 6% round 18px)'
+        : 'inset(38% 8% 38% 8% round 22px)',
+      transform: isMobile
+        ? 'scale(0.94)'
+        : 'perspective(1200px) rotateX(18deg) scale(0.92)',
+      opacity: 0.4,
+      zIndex: PROJECTS.length - i,
+    };
+  }
+
+  // Interpolate closed → open for the active capsule
+  const insetY = (isMobile ? 42 : 38) * (1 - t);
+  const insetX = (isMobile ? 6 : 8) * (1 - t);
+  const rotate = (isMobile ? 0 : 18) * (1 - t);
+  const scale = 0.92 + 0.08 * t;
+  const opacity = 0.4 + 0.6 * t;
+
+  return {
+    clipPath: `inset(${insetY}% ${insetX}% ${insetY}% ${insetX}% round ${isMobile ? 18 : 22}px)`,
+    transform: isMobile
+      ? `scale(${scale})`
+      : `perspective(1200px) rotateX(${rotate}deg) scale(${scale})`,
+    opacity,
+    zIndex: PROJECTS.length + 1,
+  };
+}
+
 export default function ProjectCapsules() {
   const { isRecruiter, reducedMotion } = useDemoMode();
-  const pinRef = useRef(null);
-  const trackRef = useRef(null);
+  const sectionRef = useRef(null);
   const [active, setActive] = useState(0);
   const [openPct, setOpenPct] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const showList = isRecruiter || reducedMotion;
 
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 767px)');
@@ -49,83 +106,42 @@ export default function ProjectCapsules() {
   }, []);
 
   useEffect(() => {
-    if (isRecruiter || reducedMotion) {
+    if (showList) {
       setOpenPct(100);
       setActive(0);
       return undefined;
     }
 
-    const pin = pinRef.current;
-    const track = trackRef.current;
-    if (!pin || !track) return undefined;
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const { active: nextActive, openPct: nextPct } = progressFromScroll(sectionRef.current);
+      setActive(nextActive);
+      setOpenPct(nextPct);
+    };
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(update);
+    };
 
-    const cards = gsap.utils.toArray(track.querySelectorAll('[data-capsule]'));
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: pin,
-          start: 'top top',
-          end: () => `+=${window.innerHeight * (isMobile ? 2.2 : 3)}`,
-          pin: true,
-          scrub: isMobile ? 0.6 : 0.85,
-          anticipatePin: 1,
-          onUpdate: (self) => {
-            const p = self.progress;
-            const seg = 1 / cards.length;
-            const idx = Math.min(cards.length - 1, Math.floor(p / seg));
-            const local = (p - idx * seg) / seg;
-            setActive(idx);
-            setOpenPct(Math.round(local * 100));
-          },
-        },
-      });
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    return () => {
+      if (raf) cancelAnimationFrame(raf);
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
+  }, [showList]);
 
-      cards.forEach((card, i) => {
-        const closed = isMobile
-          ? { clipPath: 'inset(42% 6% 42% 6% round 18px)', rotateX: 0, scale: 0.94, opacity: 0.45 }
-          : { clipPath: 'inset(38% 8% 38% 8% round 22px)', rotateX: 18, scale: 0.92, opacity: 0.4 };
-        const open = {
-          clipPath: 'inset(0% 0% 0% 0% round 22px)',
-          rotateX: 0,
-          scale: 1,
-          opacity: 1,
-        };
+  return (
+    <section id="demo-capsules" className="relative">
+      <div className="px-4 sm:px-6 pt-20 sm:pt-28 max-w-5xl mx-auto">
+        <Header />
+      </div>
 
-        gsap.set(card, {
-          ...closed,
-          transformPerspective: 900,
-          zIndex: cards.length - i,
-        });
-
-        const start = i / cards.length;
-        const mid = start + 0.5 / cards.length;
-        const end = (i + 1) / cards.length;
-
-        tl.fromTo(card, closed, { ...open, ease: 'none', duration: mid - start }, start);
-        if (i < cards.length - 1) {
-          tl.to(
-            card,
-            {
-              ...(isMobile
-                ? { clipPath: 'inset(8% 4% 70% 4% round 18px)', scale: 0.96, opacity: 0.35 }
-                : { clipPath: 'inset(6% 6% 72% 6% round 22px)', rotateX: -10, scale: 0.94, opacity: 0.3 }),
-              ease: 'none',
-              duration: end - mid,
-            },
-            mid,
-          );
-        }
-      });
-    }, pin);
-
-    return () => ctx.revert();
-  }, [isRecruiter, reducedMotion, isMobile]);
-
-  if (isRecruiter || reducedMotion) {
-    return (
-      <section id="demo-capsules" className="relative px-4 sm:px-6 py-16 sm:py-20">
-        <div className="max-w-5xl mx-auto w-full">
-          <Header />
+      {showList ? (
+        <div className="px-4 sm:px-6 pb-16 sm:pb-20 max-w-5xl mx-auto w-full">
           <ul className="mt-8 space-y-3">
             {PROJECTS.map((p) => (
               <li
@@ -134,70 +150,72 @@ export default function ProjectCapsules() {
               >
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
                   <h3 className="font-demo-display text-lg text-white">{p.title}</h3>
-                  <span className="text-[11px] uppercase tracking-wider text-white/40">{p.stack}</span>
+                  <span className="text-[11px] uppercase tracking-wider text-white/40">
+                    {p.stack}
+                  </span>
                 </div>
                 <p className="text-sm text-white/55 mt-1">{p.summary}</p>
               </li>
             ))}
           </ul>
         </div>
-      </section>
-    );
-  }
+      ) : (
+        <div
+          ref={sectionRef}
+          className="relative"
+          style={{ height: `${PROJECTS.length * 100}vh` }}
+        >
+          <div className="sticky top-0 h-[100dvh] overflow-hidden">
+            <div className="absolute top-4 left-0 right-0 z-20 flex justify-center px-4">
+              <div className="flex items-center gap-3 rounded-full border border-white/15 bg-black/60 px-4 py-2 text-xs text-white/70 backdrop-blur-md">
+                <span>
+                  {PROJECTS[active]?.title} · {openPct}% open
+                </span>
+                <span className="text-white/35">|</span>
+                <span className="text-white/45">
+                  {openPct < 85 ? 'scroll to open' : 'scroll to close / next'}
+                </span>
+              </div>
+            </div>
 
-  return (
-    <section id="demo-capsules" className="relative">
-      <div className="px-4 sm:px-6 pt-20 sm:pt-28 max-w-5xl mx-auto">
-        <Header />
-      </div>
-
-      <div ref={pinRef} className="relative h-[100dvh] overflow-hidden">
-        <div className="absolute top-4 left-0 right-0 z-20 flex justify-center px-4">
-          <div className="flex items-center gap-3 rounded-full border border-white/15 bg-black/60 px-4 py-2 text-xs text-white/70 backdrop-blur-md">
-            <span>
-              {PROJECTS[active]?.title} · {openPct}% open
-            </span>
-            <span className="text-white/35">|</span>
-            <span className="text-white/45">
-              {openPct < 85 ? 'scroll to open' : 'scroll to close / next'}
-            </span>
+            <div className="relative h-full max-w-3xl mx-auto px-4 sm:px-6 flex items-center justify-center">
+              {PROJECTS.map((p, i) => {
+                const style = capsuleStyle(i, active, openPct, isMobile);
+                return (
+                  <article
+                    key={p.id}
+                    className="absolute inset-x-4 sm:inset-x-6 top-[18%] bottom-[14%] sm:top-[16%] sm:bottom-[12%] border border-white/12 bg-gradient-to-b from-zinc-900/95 to-black overflow-hidden transition-[opacity] duration-150"
+                    style={{
+                      ...style,
+                      transformOrigin: 'center top',
+                      willChange: 'clip-path, transform, opacity',
+                    }}
+                    aria-hidden={active !== i}
+                  >
+                    <div className="h-full flex flex-col justify-between p-6 sm:p-10">
+                      <div>
+                        <p className="text-[11px] uppercase tracking-[0.2em] text-white/40 mb-3">
+                          Case study 0{i + 1}
+                        </p>
+                        <h3 className="font-demo-display text-3xl sm:text-5xl tracking-tight text-white mb-2">
+                          {p.title}
+                        </h3>
+                        <p className="text-sm sm:text-base text-white/50 mb-4">{p.role}</p>
+                        <p className="text-sm sm:text-lg text-white/70 leading-relaxed max-w-lg">
+                          {p.summary}
+                        </p>
+                      </div>
+                      <p className="text-xs sm:text-sm uppercase tracking-wider text-white/40 border-t border-white/10 pt-4">
+                        {p.stack}
+                      </p>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
           </div>
         </div>
-
-        <div
-          ref={trackRef}
-          className="relative h-full max-w-3xl mx-auto px-4 sm:px-6 flex items-center justify-center"
-          style={{ perspective: isMobile ? 'none' : '1200px' }}
-        >
-          {PROJECTS.map((p, i) => (
-            <article
-              key={p.id}
-              data-capsule
-              className="absolute inset-x-4 sm:inset-x-6 top-[18%] bottom-[14%] sm:top-[16%] sm:bottom-[12%] border border-white/12 bg-gradient-to-b from-zinc-900/95 to-black overflow-hidden will-change-transform"
-              style={{ transformOrigin: 'center top' }}
-              aria-hidden={active !== i}
-            >
-              <div className="h-full flex flex-col justify-between p-6 sm:p-10">
-                <div>
-                  <p className="text-[11px] uppercase tracking-[0.2em] text-white/40 mb-3">
-                    Case study 0{i + 1}
-                  </p>
-                  <h3 className="font-demo-display text-3xl sm:text-5xl tracking-tight text-white mb-2">
-                    {p.title}
-                  </h3>
-                  <p className="text-sm sm:text-base text-white/50 mb-4">{p.role}</p>
-                  <p className="text-sm sm:text-lg text-white/70 leading-relaxed max-w-lg">
-                    {p.summary}
-                  </p>
-                </div>
-                <p className="text-xs sm:text-sm uppercase tracking-wider text-white/40 border-t border-white/10 pt-4">
-                  {p.stack}
-                </p>
-              </div>
-            </article>
-          ))}
-        </div>
-      </div>
+      )}
     </section>
   );
 }
