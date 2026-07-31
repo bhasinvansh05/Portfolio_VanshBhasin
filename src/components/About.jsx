@@ -52,7 +52,7 @@ export default function About() {
               customVariants={revealVariants}
               className="text-base sm:text-xl md:text-2xl lg:text-3xl leading-[1.6] font-medium text-muted-foreground"
             >
-              Hey! I'm Vansh — a Computer Science student at York University with a soft spot for{" "}
+              Hey! I&apos;m Vansh, a CS student at York University who likes building things that have to survive{" "}
               <TimelineContent
                 as="span"
                 animationNum={1}
@@ -60,9 +60,11 @@ export default function About() {
                 customVariants={textVariants}
                 className="text-amber-500 border-2 border-amber-500/40 inline-block border-dotted px-2 rounded-md mx-1 bg-amber-500/5 shadow-[0_0_15px_rgba(245,158,11,0.1)]"
               >
-                elegant systems
-              </TimelineContent>{" "}
-              that actually work. From building telemetry platforms for electric micro-mobility vehicles at Sarit, to training{" "}
+                outside a demo
+              </TimelineContent>
+              . These days that means Tableau dashboards and workforce data at RBC, and telemetry for electric micromobility vehicles at Sarit, including a Raspberry Pi lock system wired into the actual hardware.
+              <br className="mb-6 block" />
+              I&apos;ve also spent time in research labs training{" "}
               <TimelineContent
                 as="span"
                 animationNum={2}
@@ -72,9 +74,9 @@ export default function About() {
               >
                 YOLO models
               </TimelineContent>{" "}
-              on drone footage at Elder Lab, and predicting 5G electromagnetic fields with deep learning at NGWN Lab — I operate best where AI, data, and solid engineering converge.
+              on drone traffic footage, and using deep learning to map 5G electromagnetic fields. Somewhere in between I shipped ConsultHub, a full-stack booking platform, and somehow still help keep a campus library (and an AI club) running.
               <br className="mb-6 block" />
-              I'm equally comfortable orchestrating cloud pipelines as I am leading library operations and coordinating teams (yes, really). When I'm not shipping code, you'll find me dissecting{" "}
+              When I&apos;m offline, I&apos;m usually deep in{" "}
               <TimelineContent
                 as="span"
                 animationNum={3}
@@ -84,7 +86,7 @@ export default function About() {
               >
                 Formula 1
               </TimelineContent>{" "}
-              tyre strategies, hunting down niche{" "}
+              strategy debates, hunting for niche{" "}
               <TimelineContent
                 as="span"
                 animationNum={4}
@@ -94,7 +96,7 @@ export default function About() {
               >
                 fragrances
               </TimelineContent>
-              , or obsessing over the perfect minimal UI.
+              , or tweaking a UI until it finally feels right.
             </TimelineContent>
           </div>
         </div>

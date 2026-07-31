@@ -155,12 +155,24 @@ const GooeyNav = ({
   };
 
   useEffect(() => {
-    const onScroll = () => {
-      setIsScrolled(window.scrollY > 24);
+    const applyNavScroll = () => {
+      const hero = document.getElementById('hero');
+      const heroH = hero?.offsetHeight || window.innerHeight;
+      // Ease from frosted hero look → solid nav once past the hero
+      const ratio = Math.min(1, Math.max(0, window.scrollY / (heroH * 0.6)));
+      setIsScrolled(ratio > 0.45);
+      if (containerRef.current) {
+        containerRef.current.style.setProperty('--nav-scroll', String(ratio));
+      }
     };
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+
+    applyNavScroll();
+    window.addEventListener('scroll', applyNavScroll, { passive: true });
+    window.addEventListener('resize', applyNavScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', applyNavScroll);
+      window.removeEventListener('resize', applyNavScroll);
+    };
   }, []);
 
   useEffect(() => {

@@ -5,7 +5,8 @@ export const portfolioData = {
     bio: "I build things :)"
   },
   about: {
-    description: "Hey! I'm Vansh, a CS student at York University who loves turning coffee into scalable pipelines. Whether I'm teaching drones how to spot traffic, mapping 5G networks with deep learning, or building slick full-stack platforms, I thrive at the intersection of AI, data, and clean architecture. When I'm not training models or orchestrating cloud deployments, you can usually find me geeking out over Formula 1 strategy, exploring niche perfumes, or on the hunt for the perfect minimal UI design."
+    description:
+      "Hey! I'm Vansh, a CS student at York University who likes building things that have to survive outside a demo. These days that means Tableau dashboards and workforce data at RBC, and telemetry for electric micromobility vehicles at Sarit, including a Raspberry Pi lock system wired into the actual hardware. I've also spent time in research labs training YOLO models on drone traffic footage, and using deep learning to map 5G electromagnetic fields. Somewhere in between I shipped ConsultHub, a full-stack booking platform, and somehow still help keep a campus library (and an AI club) running. When I'm offline, I'm usually deep in Formula 1 strategy debates, hunting for niche fragrances, or tweaking a UI until it finally feels right.",
   },
   experience: [
     {

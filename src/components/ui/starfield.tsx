@@ -61,9 +61,6 @@ const Starfield = ({
     const startTime = Date.now()
     let currentTime = 0
 
-    // silence unused prop (kept for API parity with upstream)
-    void voidWidth
-
     const setSize = () => {
       size.x = container.clientWidth
       size.y = container.clientHeight
@@ -85,13 +82,17 @@ const Starfield = ({
 
     const createStar = () => {
       const star = {} as Star
+      // Keep a clear center void, then ring out to starEscapeWidth
+      const inner = Math.max(8, voidWidth)
+      const outer = Math.max(inner + 24, starEscapeWidth)
       const rands = [
-        Math.random() * (starEscapeWidth / 2) + 1,
-        Math.random() * (starEscapeWidth / 2) + starEscapeWidth,
+        Math.random() * ((outer - inner) / 2) + inner,
+        Math.random() * ((outer - inner) / 2) + (inner + outer) / 2,
       ]
       star.orbital = rands.reduce((p, c) => p + c, 0) / rands.length
       star.opacity = Math.floor(
-        (1 - star.orbital / starEscapeWidth) * maxOpacity + Math.random() * 80,
+        (1 - (star.orbital - inner) / Math.max(1, outer - inner)) * maxOpacity +
+          Math.random() * 80,
       )
       star.position = {
         x: size.x / 2,
@@ -116,13 +117,22 @@ const Starfield = ({
       starsRef.current.push(star)
     }
 
+    const plot = (x: number, y: number, opacity: number) => {
+      const index = Math.floor(y) * size.x + Math.floor(x)
+      if (index < 0 || index >= data.length) return
+      data[index] =
+        (opacity << 24) | (starColor.b << 16) | (starColor.g << 8) | starColor.r
+    }
+
     const drawStar = (star: Star) => {
-      const prevIndex =
-        Math.floor(star.realPosition.y + star.wave1) * size.x +
-        Math.floor(star.realPosition.x + star.wave2)
+      const prevX = star.realPosition.x + star.wave2
+      const prevY = star.realPosition.y + star.wave1
+      const prevIndex = Math.floor(prevY) * size.x + Math.floor(prevX)
       if (prevIndex >= 0 && prevIndex < data.length) {
         data[prevIndex] = 0
       }
+      const prevIndex2 = Math.floor(prevY) * size.x + Math.floor(prevX + 1)
+      if (prevIndex2 >= 0 && prevIndex2 < data.length) data[prevIndex2] = 0
 
       star.wave1 = Math.sin(currentTime * star.waveSpeed1) * waveFrequency
       star.wave2 = Math.sin(currentTime * star.waveSpeed2) * waveFrequency
@@ -133,30 +143,28 @@ const Starfield = ({
         star.position.y,
         star.rSpeed * currentTime,
       )
+      const inner = Math.max(8, voidWidth)
+      const outer = Math.max(inner + 24, starEscapeWidth)
       star.opacity = Math.floor(
-        (1 - star.orbital / starEscapeWidth) * maxOpacity + Math.random() * 80,
+        (1 - (star.orbital - inner) / Math.max(1, outer - inner)) * maxOpacity +
+          Math.random() * 80,
       )
 
-      const index =
-        Math.floor(star.realPosition.y + star.wave1) * size.x +
-        Math.floor(star.realPosition.x + star.wave2)
-      if (index >= 0 && index < data.length) {
-        data[index] =
-          (star.opacity << 24) |
-          (starColor.b << 16) |
-          (starColor.g << 8) |
-          starColor.r
-      }
+      const x = star.realPosition.x + star.wave2
+      const y = star.realPosition.y + star.wave1
+      const op = Math.min(255, Math.max(0, star.opacity))
+      plot(x, y, op)
+      plot(x + 1, y, Math.floor(op * 0.7))
+      plot(x, y + 1, Math.floor(op * 0.55))
     }
 
     const render = () => {
       currentTime = (Date.now() - startTime) / 10
 
-      context.fillStyle = "#000000"
-      context.fillRect(0, 0, size.x, size.y)
+      data.fill(0)
 
       if (starsRef.current.length < starCount) {
-        for (let i = 0; i < Math.min(100, starCount - starsRef.current.length); i++) {
+        for (let i = 0; i < Math.min(160, starCount - starsRef.current.length); i++) {
           createStar()
         }
       }
