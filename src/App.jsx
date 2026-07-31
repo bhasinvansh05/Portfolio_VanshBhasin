@@ -7,8 +7,7 @@ import Projects from './components/Projects';
 import Resume from './components/Resume';
 import Contact from './components/Contact';
 import { WebGLShader } from './components/ui/web-gl-shader';
-import { NavBar } from './components/ui/tubelight-navbar';
-import { Home, User, Briefcase, Mail, GraduationCap, Wrench, FileText } from 'lucide-react';
+import GooeyNav from './components/ui/GooeyNav';
 
 function App() {
   const [scrollY, setScrollY] = useState(0);
@@ -37,13 +36,13 @@ function App() {
   const darkenAmount = scrollRatio * 0.4; // Max 0.4 opacity background
 
   const navItems = [
-    { name: 'Home', url: '#hero', icon: Home },
-    { name: 'About', url: '#about', icon: User },
-    { name: 'Projects', url: '#projects', icon: Briefcase },
-    { name: 'Experience', url: '#experience', icon: GraduationCap },
-    { name: 'Skills', url: '#skills', icon: Wrench },
-    { name: 'Resume', url: '#resume', icon: FileText },
-    { name: 'Contact', url: '#contact', icon: Mail }
+    { label: 'Home', href: '#hero' },
+    { label: 'About', href: '#about' },
+    { label: 'Projects', href: '#projects' },
+    { label: 'Experience', href: '#experience' },
+    { label: 'Skills', href: '#skills' },
+    { label: 'Resume', href: '#resume' },
+    { label: 'Contact', href: '#contact' },
   ];
 
   return (
@@ -61,7 +60,18 @@ function App() {
       />
 
       <main className="relative w-full overflow-x-hidden">
-        <NavBar items={navItems} />
+        <div className="fixed inset-x-0 bottom-0 sm:top-0 sm:bottom-auto z-50 flex justify-center overflow-x-clip mb-4 sm:mb-0 sm:pt-4 md:pt-6 pb-[env(safe-area-inset-bottom)] sm:pb-0 px-2">
+          <GooeyNav
+            items={navItems}
+            particleCount={15}
+            particleDistances={[90, 10]}
+            particleR={100}
+            initialActiveIndex={0}
+            animationTime={600}
+            timeVariance={300}
+            colors={[1, 2, 3, 1, 2, 3, 1, 4]}
+          />
+        </div>
         <Hero />
         <About />
         <Projects />

@@ -18,7 +18,7 @@ export default function WorkExperience() {
   }));
 
   return (
-    <section id="experience" className="flex flex-col justify-center px-4 sm:px-6 py-16 sm:py-24 relative z-10 overflow-hidden">
+    <section id="experience" className="flex flex-col justify-center px-4 sm:px-6 py-16 sm:py-24 relative z-10 overflow-x-clip">
       <div className="max-w-7xl mx-auto w-full">
         <div className="max-w-7xl mx-auto px-2 sm:px-4 md:px-8 lg:px-10 mb-4 sm:mb-6">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight text-foreground mb-3 sm:mb-4">Experience</h2>
