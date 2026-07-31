@@ -73,7 +73,7 @@ export const portfolioData = {
     }
   ],
   contact: {
-    email: "vansh05@my.yorku.ca",
+    email: "me@vanshbhasin.dev",
     github: "https://github.com/bhasinvansh05",
     linkedin: "https://www.linkedin.com/in/vansh05/"
   }
