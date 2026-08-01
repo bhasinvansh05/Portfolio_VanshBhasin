@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { GlassBlogCard } from './ui/glass-blog-card-shadcnui';
+import { ArrowRight } from 'lucide-react';
+import { ProjectTile } from './ui/glass-cards';
 import {
   Dialog,
   DialogContent,
@@ -8,122 +9,90 @@ import {
   DialogDescription,
 } from './ui/dialog';
 import { Badge } from './ui/badge';
-
-const projectCards = [
-  {
-    title: "ConsultHub",
-    titleHref: "https://consulthub.vanshbhasin.dev",
-    excerpt:
-      "Full-stack consulting booking platform: Spring Boot REST API, PostgreSQL, Dockerized React frontend, and role-based flows for clients, consultants, and admins.",
-    tags: ["Spring Boot", "PostgreSQL"],
-    readTime: "EECS 3311",
-    date: "2025–2026",
-    details: [
-      "Layered Spring Boot backend (package-by-feature) with JPA: services catalog, availability slots, booking lifecycle, payments, notifications, JWT security, and admin policies.",
-      "Modeled bookings with the State pattern (requested → confirmed → paid → completed, with reject/cancel paths), Strategy pattern for payment types (credit, debit, PayPal, bank transfer), and a factory for hydrating states from persisted status.",
-      "Ran end-to-end with Docker Compose (PostgreSQL, API, Vite React UI), Neon or local Postgres optional, H2 for tests; integrated Gemini-powered AI assistant for clients.",
-      "Live app at consulthub.vanshbhasin.dev; source at https://github.com/bhasinvansh05/ConsultHub.",
-    ],
-  },
-  {
-    title: "VisionCalc",
-    titleHref: "https://visioncalc.vanshbhasin.dev",
-    excerpt:
-      "In-browser hand-gesture calculator: count fingers for digits and signal operators with MediaPipe HandLandmarker — no backend, just webcam and computer vision.",
-    tags: ["Computer Vision", "MediaPipe"],
-    readTime: "Personal",
-    date: "2026",
-    details: [
-      "Built a static React + TypeScript SPA that tracks hands entirely in the browser with Google MediaPipe HandLandmarker — digits from extended-finger counts (0–5), distinct signals for +, −, ×, ÷, =, and clear.",
-      "Separated recognition into pure, unit-tested logic: finger-extension state, gesture-to-token mapping, hold-to-confirm stabilization (~0.9 s), and a safe expression evaluator.",
-      "Shipped a minimal Apple-inspired UI with live camera overlay, detection HUD, and gesture guide; demo mode drives the real pipeline without a webcam.",
-      "Live app at visioncalc.vanshbhasin.dev; source at https://github.com/bhasinvansh05/VisionCalc.",
-    ],
-  },
-  {
-    title: "Drone Traffic Analysis Pipeline",
-    excerpt: "Scalable computer vision system for analyzing drone-captured traffic footage using YOLO models.",
-    tags: ["Computer Vision", "YOLO"],
-    readTime: "Elder Lab",
-    date: "2025",
-    details: [
-      "Developed scalable computer vision pipelines to analyze drone traffic using YOLO object detection models.",
-      "Sped up deployment by 40% across hybrid cloud environments using Docker and CI/CD tools.",
-      "Built end-to-end data processing workflows for aerial traffic surveillance at Elder Lab, York University.",
-    ],
-  },
-  {
-    title: "EMF Exposure Prediction System",
-    excerpt: "Deep learning research for predicting electromagnetic field exposure using generative data augmentation.",
-    tags: ["Deep Learning", "Data Analytics"],
-    readTime: "NGWN Lab",
-    date: "2024–2025",
-    details: [
-      "Conducted research on EMF exposure prediction using deep learning and generative data augmentation techniques.",
-      "Built data pipelines connecting Python, SQL, and Power BI, boosting validation workflows by 15%.",
-      "Published findings on predictive modeling for 5G network electromagnetic field mapping.",
-    ],
-  },
-  {
-    title: "Micromobility Telemetry Platform",
-    excerpt: "Software systems supporting telemetry, safety, and data processing for electric micro-mobility vehicles.",
-    tags: ["IoT", "Software Integration"],
-    readTime: "Sarit Micromobility",
-    date: "2026",
-    details: [
-      "Contributed to the development and testing of software systems supporting telemetry, safety, and data processing.",
-      "Worked on real-time data pipelines for electric micro-mobility vehicle monitoring and diagnostics.",
-      "Integrated safety and compliance modules into the core mobility platform.",
-    ],
-  },
-];
-
-const author = {
-  name: "Vansh Bhasin",
-  avatar: "https://github.com/bhasinvansh05.png",
-};
+import {
+  cardData,
+  getProjectsByRecency,
+  getRecentProjects,
+} from '@/lib/utils';
 
 export default function Projects() {
   const [selectedProject, setSelectedProject] = useState(null);
+  const [showAllProjects, setShowAllProjects] = useState(false);
+
+  const recentProjects = getRecentProjects(3);
+  const allProjects = getProjectsByRecency(cardData);
 
   return (
-    <section id="projects" className="flex flex-col justify-center px-4 sm:px-6 py-16 sm:py-24 relative z-10 w-full">
-      <div className="max-w-7xl mx-auto w-full">
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight text-foreground mb-3 sm:mb-4 text-center">
+    <section id="projects" className="relative z-10 w-full px-4 py-16 sm:px-6 sm:py-24">
+      <div className="mx-auto w-full max-w-6xl">
+        <h2 className="mb-3 text-center text-2xl font-semibold tracking-tight text-foreground sm:mb-4 sm:text-3xl md:text-4xl">
           Featured Work
         </h2>
-        <p className="text-muted-foreground text-sm md:text-base max-w-2xl mx-auto text-center mb-10 sm:mb-16 px-2">
+        <p className="mx-auto mb-10 max-w-2xl px-2 text-center text-sm text-muted-foreground md:text-base sm:mb-12">
           Things that had to work after the demo ended.
         </p>
-        <div className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-8 md:gap-10">
-          {projectCards.map((project, index) => (
-            <GlassBlogCard
-              key={index}
-              title={project.title}
-              titleHref={project.titleHref}
-              excerpt={project.excerpt}
-              author={author}
-              date={project.date}
-              readTime={project.readTime}
-              tags={project.tags}
-              className="max-w-full w-full justify-self-stretch"
-              onReadMore={() => setSelectedProject(project)}
+
+        {/* 3 most recent — 3×1 on desktop, stacked on small screens */}
+        <div className="grid grid-cols-1 gap-5 sm:gap-6 md:grid-cols-3 md:gap-7">
+          {recentProjects.map((project) => (
+            <ProjectTile
+              key={project.id}
+              project={project}
+              onSelect={() => setSelectedProject(project)}
             />
           ))}
         </div>
+
+        <div className="mt-10 flex justify-center sm:mt-12">
+          <button
+            type="button"
+            onClick={() => setShowAllProjects(true)}
+            className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/[0.04] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            More projects
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </button>
+        </div>
       </div>
 
-      {/* Read More Dialog */}
-      <Dialog open={!!selectedProject} onOpenChange={() => setSelectedProject(null)}>
-        <DialogContent className="sm:max-w-xl bg-card/95 backdrop-blur-xl border-border/50">
+      {/* All projects — separate view */}
+      <Dialog open={showAllProjects} onOpenChange={setShowAllProjects}>
+        <DialogContent className="max-h-[90vh] w-[calc(100%-1.5rem)] max-w-5xl overflow-y-auto border-border/50 bg-black/95 backdrop-blur-xl sm:p-8">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold text-foreground">
-              {selectedProject?.titleHref ? (
+              All projects
+            </DialogTitle>
+            <DialogDescription className="text-muted-foreground">
+              Everything shipped, researched, or still in the field.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {allProjects.map((project) => (
+              <ProjectTile
+                key={project.id}
+                project={project}
+                onSelect={() => {
+                  setShowAllProjects(false);
+                  setSelectedProject(project);
+                }}
+              />
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Project detail */}
+      <Dialog open={!!selectedProject} onOpenChange={() => setSelectedProject(null)}>
+        <DialogContent className="border-border/50 bg-card/95 backdrop-blur-xl sm:max-w-xl">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold text-foreground">
+              {selectedProject?.href ? (
                 <a
-                  href={selectedProject.titleHref}
+                  href={selectedProject.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+                  className="rounded-sm underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   {selectedProject.title}
                 </a>
@@ -132,21 +101,26 @@ export default function Projects() {
               )}
             </DialogTitle>
             <DialogDescription className="text-muted-foreground">
-              {selectedProject?.readTime} · {selectedProject?.date}
+              {selectedProject?.meta}
             </DialogDescription>
           </DialogHeader>
-          <div className="flex gap-2 mt-2">
-            {selectedProject?.tags?.map((tag, i) => (
-              <Badge key={i} variant="secondary" className="bg-secondary/50">
+          <div className="mt-2 flex flex-wrap gap-2">
+            {selectedProject?.tags?.map((tag) => (
+              <Badge key={tag} variant="secondary" className="bg-secondary/50">
                 {tag}
               </Badge>
             ))}
           </div>
           <div className="mt-4 space-y-3">
-            {selectedProject?.details?.map((detail, i) => (
-              <div key={i} className="flex gap-3 items-start">
-                <span className="text-primary mt-1.5 text-xs">●</span>
-                <p className="text-sm text-muted-foreground leading-relaxed">{detail}</p>
+            {(selectedProject?.details?.length
+              ? selectedProject.details
+              : selectedProject?.description
+                ? [selectedProject.description]
+                : []
+            ).map((detail, i) => (
+              <div key={i} className="flex items-start gap-3">
+                <span className="mt-1.5 text-xs text-primary">●</span>
+                <p className="text-sm leading-relaxed text-muted-foreground">{detail}</p>
               </div>
             ))}
           </div>
