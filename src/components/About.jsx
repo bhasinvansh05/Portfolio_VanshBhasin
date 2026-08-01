@@ -39,9 +39,12 @@ export default function About() {
   return (
     <section id="about" className="min-h-[70vh] flex flex-col justify-center px-4 sm:px-6 py-16 sm:py-24 relative z-10 w-full overflow-hidden">
       <div className="max-w-5xl mx-auto w-full" ref={heroRef}>
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight text-white mb-8 sm:mb-12 drop-shadow-[0_2px_10px_rgba(0,0,0,1)]">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight text-white mb-3 sm:mb-4 drop-shadow-[0_2px_10px_rgba(0,0,0,1)]">
           About
         </h2>
+        <p className="text-white/55 text-sm md:text-base max-w-xl mb-8 sm:mb-12 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
+          A little context before the rest of the scroll.
+        </p>
         
         <div className="flex flex-col lg:flex-row items-start gap-6 sm:gap-8 bg-card/30 border border-white/5 rounded-2xl sm:rounded-3xl p-5 sm:p-8 md:p-12 backdrop-blur-md">
           <div className="flex-1">
