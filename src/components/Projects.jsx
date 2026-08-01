@@ -26,6 +26,21 @@ const projectCards = [
     ],
   },
   {
+    title: "VisionCalc",
+    titleHref: "https://visioncalc.vanshbhasin.dev",
+    excerpt:
+      "In-browser hand-gesture calculator: count fingers for digits and signal operators with MediaPipe HandLandmarker — no backend, just webcam and computer vision.",
+    tags: ["Computer Vision", "MediaPipe"],
+    readTime: "Personal",
+    date: "2026",
+    details: [
+      "Built a static React + TypeScript SPA that tracks hands entirely in the browser with Google MediaPipe HandLandmarker — digits from extended-finger counts (0–5), distinct signals for +, −, ×, ÷, =, and clear.",
+      "Separated recognition into pure, unit-tested logic: finger-extension state, gesture-to-token mapping, hold-to-confirm stabilization (~0.9 s), and a safe expression evaluator.",
+      "Shipped a minimal Apple-inspired UI with live camera overlay, detection HUD, and gesture guide; demo mode drives the real pipeline without a webcam.",
+      "Live app at visioncalc.vanshbhasin.dev; source at https://github.com/bhasinvansh05/VisionCalc.",
+    ],
+  },
+  {
     title: "Drone Traffic Analysis Pipeline",
     excerpt: "Scalable computer vision system for analyzing drone-captured traffic footage using YOLO models.",
     tags: ["Computer Vision", "YOLO"],
