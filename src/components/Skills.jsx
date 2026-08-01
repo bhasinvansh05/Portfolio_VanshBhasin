@@ -50,7 +50,7 @@ export default function Skills() {
           Skills & Technologies
         </h2>
         <p className="text-muted-foreground text-sm md:text-base max-w-2xl mx-auto text-center mb-10 sm:mb-16 px-2">
-          Tools and technologies I work with daily.
+          What I reach for when something needs shipping.
         </p>
         <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
           {skills.map((skill) => (

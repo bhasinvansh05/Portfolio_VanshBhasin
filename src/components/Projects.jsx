@@ -78,7 +78,7 @@ export default function Projects() {
           Featured Work
         </h2>
         <p className="text-muted-foreground text-sm md:text-base max-w-2xl mx-auto text-center mb-10 sm:mb-16 px-2">
-          A collection of projects spanning design, development, and AI research.
+          Things that had to work after the demo ended.
         </p>
         <div className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-8 md:gap-10">
           {projectCards.map((project, index) => (

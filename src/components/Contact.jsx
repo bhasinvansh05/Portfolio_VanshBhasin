@@ -5,9 +5,9 @@ export default function Contact() {
   return (
     <section id="contact" className="min-h-[60vh] flex flex-col justify-center px-4 sm:px-6 py-16 sm:py-24 pb-32 sm:pb-24 relative z-10">
       <div className="max-w-4xl mx-auto w-full text-center">
-        <h2 className="text-2xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-foreground mb-4 sm:mb-6">Let's Connect</h2>
-        <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 sm:mb-12 max-w-2xl mx-auto leading-relaxed px-2">
-          I'm actively looking for new opportunities. Whether you have a question or just want to say hi, I'll try my best to get back to you!
+        <h2 className="text-2xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-foreground mb-3 sm:mb-4">Let's Connect</h2>
+        <p className="text-sm md:text-base text-muted-foreground mb-8 sm:mb-12 max-w-2xl mx-auto leading-relaxed px-2">
+          Say hi — I actually reply.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
           <button

@@ -23,7 +23,7 @@ export default function WorkExperience() {
         <div className="max-w-7xl mx-auto px-2 sm:px-4 md:px-8 lg:px-10 mb-4 sm:mb-6">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight text-foreground mb-3 sm:mb-4">Experience</h2>
           <p className="text-muted-foreground text-sm md:text-base max-w-2xl">
-            A timeline of my professional journey from research labs to real-world systems.
+            Roles that asked for more than a hello-world.
           </p>
         </div>
         <Timeline data={timelineData} />
