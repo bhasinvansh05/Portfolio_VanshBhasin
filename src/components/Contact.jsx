@@ -35,40 +35,39 @@ export default function Contact() {
 
         <Reveal
           delay={0.06}
-          className="mt-8 flex flex-col items-center gap-3 sm:mt-10 sm:gap-4"
+          className="mx-auto mt-8 flex w-full max-w-[17.5rem] flex-col items-stretch gap-3 sm:mt-10 sm:max-w-sm sm:gap-3.5"
         >
           <a
             href={`mailto:${portfolioData.contact.email}`}
-            className="apple-press apple-capsule apple-capsule-block max-w-full gap-2 overflow-hidden bg-[var(--ink)] text-white"
+            className="apple-press apple-capsule !inline-flex w-full max-w-full box-border gap-2 overflow-hidden bg-[var(--ink)] text-white"
           >
             <Mail className="h-4 w-4 shrink-0" aria-hidden="true" />
-            <span className="truncate">{portfolioData.contact.email}</span>
+            <span className="min-w-0 truncate">{portfolioData.contact.email}</span>
           </a>
 
-          <div className="flex w-full max-w-md flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
-            <button
-              type="button"
-              onClick={copyEmail}
-              className="apple-press apple-capsule apple-capsule-block gap-2 border border-black/10 bg-white text-[var(--ink)]"
-            >
-              {copied ? (
-                <Check className="h-4 w-4" aria-hidden="true" />
-              ) : (
-                <Copy className="h-4 w-4" aria-hidden="true" />
-              )}
-              {copied ? 'Copied' : 'Copy email'}
-            </button>
-            <a
-              href={RESUME_URL}
-              download={RESUME_FILENAME}
-              className="apple-press apple-capsule apple-capsule-block gap-2 border border-black/10 bg-white text-[var(--ink)]"
-            >
-              <Download className="h-4 w-4" aria-hidden="true" />
-              Resume
-            </a>
-          </div>
+          <button
+            type="button"
+            onClick={copyEmail}
+            className="apple-press apple-capsule !inline-flex w-full max-w-full box-border gap-2 border border-black/10 bg-white text-[var(--ink)]"
+          >
+            {copied ? (
+              <Check className="h-4 w-4 shrink-0" aria-hidden="true" />
+            ) : (
+              <Copy className="h-4 w-4 shrink-0" aria-hidden="true" />
+            )}
+            {copied ? 'Copied' : 'Copy email'}
+          </button>
 
-          <div className="mt-2 flex items-center gap-2">
+          <a
+            href={RESUME_URL}
+            download={RESUME_FILENAME}
+            className="apple-press apple-capsule !inline-flex w-full max-w-full box-border gap-2 border border-black/10 bg-white text-[var(--ink)]"
+          >
+            <Download className="h-4 w-4 shrink-0" aria-hidden="true" />
+            Resume
+          </a>
+
+          <div className="mt-1 flex items-center justify-center gap-2">
             <a
               href={portfolioData.contact.github}
               target="_blank"
