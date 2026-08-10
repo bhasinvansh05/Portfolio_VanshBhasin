@@ -1,32 +1,41 @@
 import { portfolioData } from '../data/portfolio';
-import { Timeline } from './ui/timeline';
-import { Building2, Calendar } from 'lucide-react';
+import Reveal from './Reveal';
 
 export default function WorkExperience() {
-  const timelineData = portfolioData.experience.map((job) => ({
-    title: job.duration,
-    content: (
-      <div className="group relative border border-border rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 bg-card/50 hover:bg-card/80 transition-colors backdrop-blur-sm">
-        <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-          <Building2 className="h-4 w-4 sm:h-5 sm:w-5 shrink-0 text-primary/70" />
-          <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground break-words">{job.company}</h3>
-        </div>
-        <p className="text-sm sm:text-base font-medium text-primary/80 mb-3 sm:mb-4">{job.role}</p>
-        <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">{job.description}</p>
-      </div>
-    ),
-  }));
-
   return (
-    <section id="experience" className="flex flex-col justify-center px-4 sm:px-6 py-16 sm:py-24 relative z-10 overflow-x-clip">
-      <div className="max-w-7xl mx-auto w-full">
-        <div className="max-w-7xl mx-auto px-2 sm:px-4 md:px-8 lg:px-10 mb-4 sm:mb-6">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight text-foreground mb-3 sm:mb-4">Experience</h2>
-          <p className="text-muted-foreground text-sm md:text-base max-w-2xl">
-            Roles that asked for more than a hello-world.
-          </p>
-        </div>
-        <Timeline data={timelineData} />
+    <section id="experience" className="apple-section relative z-10">
+      <div className="apple-panel">
+        <Reveal className="apple-section-head">
+          <p className="apple-kicker mb-3">Experience</p>
+          <h2 className="apple-title text-[clamp(1.75rem,1.2rem+2.2vw,3rem)] text-[var(--ink)]">
+            Roles that asked for more than a hello-world
+          </h2>
+        </Reveal>
+
+        <ol>
+          {portfolioData.experience.map((job, index) => (
+            <Reveal key={job.id} delay={index * 0.03}>
+              <li className="border-t border-black/10 py-6 first:border-t-0 first:pt-0 sm:py-8">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between sm:gap-8">
+                  <div className="min-w-0">
+                    <h3 className="text-[clamp(1.15rem,1rem+0.8vw,1.5rem)] font-semibold tracking-[-0.02em] text-[var(--ink)]">
+                      {job.company}
+                    </h3>
+                    <p className="mt-1 text-[clamp(0.9rem,0.82rem+0.3vw,1rem)] font-semibold text-[var(--ink-secondary)]">
+                      {job.role}
+                    </p>
+                  </div>
+                  <p className="shrink-0 text-[clamp(0.75rem,0.7rem+0.2vw,0.875rem)] font-semibold tabular-nums tracking-[-0.01em] text-[var(--ink-secondary)]">
+                    {job.duration}
+                  </p>
+                </div>
+                <p className="apple-body mt-3 max-w-2xl text-[clamp(0.9rem,0.82rem+0.3vw,1rem)] sm:mt-4">
+                  {job.description}
+                </p>
+              </li>
+            </Reveal>
+          ))}
+        </ol>
       </div>
     </section>
   );

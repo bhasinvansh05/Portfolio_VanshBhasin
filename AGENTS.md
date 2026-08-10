@@ -1,5 +1,14 @@
 # AGENTS.md
 
+## Skills
+
+- `.agents/skills/apple-design` — Apple interface design & fluid motion (from [emilkowalski/skills](https://github.com/emilkowalski/skills/tree/main/skills/apple-design)). Prefer its guidance for materials, springs, typography, and reduced-motion when redesigning or reviewing UI.
+
+## Site versions
+
+- `/` — current Apple-inspired redesign (active site)
+- `/v1/` — archived previous portfolio (static snapshot under `public/v1`)
+
 ## Cursor Cloud specific instructions
 
 This repo is a single static front-end app: a personal portfolio built with Vite + React (JSX) + TypeScript config, TailwindCSS, Framer Motion/GSAP/Lenis, and Three.js. There is no backend, database, or auth. Package manager is npm (`package-lock.json`).

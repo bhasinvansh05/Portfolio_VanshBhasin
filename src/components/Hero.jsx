@@ -1,45 +1,75 @@
+import { motion, useReducedMotion } from 'framer-motion';
+import { Download } from 'lucide-react';
 import { portfolioData } from '../data/portfolio';
-import { LiquidButton } from './ui/liquid-glass-button';
+import { RESUME_FILENAME, RESUME_URL, scrollToId } from '../lib/navigation';
 
 export default function Hero() {
-  const scrollToContact = () =>
-    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+  const reduceMotion = useReducedMotion();
+
+  const spring = reduceMotion
+    ? { duration: 0.2 }
+    : { type: 'spring', bounce: 0, duration: 0.45 };
 
   return (
     <section
       id="hero"
-      className="relative h-[100dvh] min-h-[100dvh] w-full overflow-hidden"
+      className="relative flex min-h-[100dvh] w-full flex-col justify-center px-[var(--section-gutter)] pb-24 pt-28 sm:pb-28 sm:pt-32"
     >
-      {/*
-        Name + bio stacked and centered on the shared origin.
-        Keeping them in normal flow avoids the bio overlapping a wrapped
-        multi-line title on large desktop type sizes.
-      */}
-      <div
-        className="absolute left-1/2 z-10 flex w-full max-w-[min(100%,72rem)] -translate-x-1/2 -translate-y-1/2 flex-col items-center px-4"
-        style={{ top: 'var(--hero-origin-y, 36dvh)' }}
-      >
-        <h1 className="w-full text-center font-extrabold tracking-tight text-white drop-shadow-[0_0_15px_rgba(0,0,0,1)] whitespace-nowrap leading-none text-[clamp(2.75rem,5.5vw+1.25rem,8rem)]">
-          {portfolioData.hero.title}
-        </h1>
-
-        <p className="mt-3 sm:mt-4 md:mt-5 w-full max-w-xl text-center font-medium leading-relaxed text-[#f5f5f5] drop-shadow-[0_0_10px_rgba(0,0,0,1)] text-base sm:text-lg md:text-2xl">
-          {portfolioData.hero.bio}
-        </p>
-      </div>
-
-      {/* Contact — below the circle; clears bottom nav on small screens */}
-      <div
-        className="absolute left-1/2 z-10 flex w-full justify-center px-4 -translate-x-1/2"
-        style={{ top: 'calc(var(--hero-origin-y, 36dvh) + clamp(12rem, 42dvh, 24rem))' }}
-      >
-        <LiquidButton
-          className="text-white w-full max-w-[12rem] sm:w-48 cursor-pointer text-sm sm:text-base min-h-[48px]"
-          size={'xl'}
-          onClick={scrollToContact}
+      <div className="mx-auto w-full max-w-5xl text-center">
+        <motion.p
+          initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ ...spring, delay: 0.02 }}
+          className="apple-kicker mb-5"
         >
-          Contact Me
-        </LiquidButton>
+          CS · York University
+        </motion.p>
+
+        <motion.h1
+          initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ ...spring, delay: 0.06 }}
+          className="apple-display mx-auto max-w-[16ch] text-[clamp(3rem,9vw,6.75rem)] text-[var(--ink)]"
+        >
+          {portfolioData.hero.name}
+        </motion.h1>
+
+        <motion.p
+          initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ ...spring, delay: 0.12 }}
+          className="mx-auto mt-5 max-w-lg text-[clamp(1.05rem,0.95rem+0.5vw,1.25rem)] font-medium leading-snug tracking-[-0.015em] text-[var(--ink)] sm:mt-6"
+        >
+          I ship work that still behaves on Monday: dashboards at RBC,
+          telemetry on real hardware, and UIs I refuse to leave half-right.
+        </motion.p>
+
+        <motion.div
+          initial={reduceMotion ? false : { opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ ...spring, delay: 0.18 }}
+          className="mt-9 flex flex-col items-center justify-center gap-3 sm:mt-10 sm:flex-row sm:gap-4"
+        >
+          <a
+            href={RESUME_URL}
+            download={RESUME_FILENAME}
+            className="apple-press apple-capsule apple-capsule-block gap-2 bg-[var(--ink)] text-white"
+          >
+            <Download className="h-4 w-4" aria-hidden="true" />
+            Download Resume
+          </a>
+          <button
+            type="button"
+            onClick={() =>
+              scrollToId('contact', {
+                behavior: reduceMotion ? 'auto' : 'smooth',
+              })
+            }
+            className="apple-press apple-capsule apple-capsule-block border border-black/15 bg-white text-[var(--ink)]"
+          >
+            Contact Me
+          </button>
+        </motion.div>
       </div>
     </section>
   );
