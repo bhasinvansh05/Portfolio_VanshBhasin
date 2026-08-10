@@ -1,108 +1,27 @@
-import { useRef } from "react";
-import { TimelineContent } from "./ui/timeline-animation";
+import Reveal from './Reveal';
+import { portfolioData } from '../data/portfolio';
 
 export default function About() {
-  const heroRef = useRef(null);
-  
-  const revealVariants = {
-    visible: (i) => ({
-      y: 0,
-      opacity: 1,
-      filter: "blur(0px)",
-      transition: {
-        delay: i * 0.4,
-        duration: 0.8,
-      },
-    }),
-    hidden: {
-      filter: "blur(10px)",
-      y: 40,
-      opacity: 0,
-    },
-  };
-  
-  const textVariants = {
-    visible: (i) => ({
-      filter: "blur(0px)",
-      opacity: 1,
-      transition: {
-        delay: i * 0.2,
-        duration: 0.8,
-      },
-    }),
-    hidden: {
-      filter: "blur(10px)",
-      opacity: 0,
-    },
-  };
-
   return (
-    <section id="about" className="min-h-[70vh] flex flex-col justify-center px-4 sm:px-6 py-16 sm:py-24 relative z-10 w-full overflow-hidden">
-      <div className="max-w-5xl mx-auto w-full" ref={heroRef}>
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight text-white mb-3 sm:mb-4 drop-shadow-[0_2px_10px_rgba(0,0,0,1)]">
-          About
-        </h2>
-        <p className="text-white/55 text-sm md:text-base max-w-xl mb-8 sm:mb-12 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
-          A little context before the rest of the scroll.
-        </p>
-        
-        <div className="flex flex-col lg:flex-row items-start gap-6 sm:gap-8 bg-card/30 border border-white/5 rounded-2xl sm:rounded-3xl p-5 sm:p-8 md:p-12 backdrop-blur-md">
-          <div className="flex-1">
-            <TimelineContent
-              as="h3"
-              animationNum={0}
-              timelineRef={heroRef}
-              customVariants={revealVariants}
-              className="text-base sm:text-xl md:text-2xl lg:text-3xl leading-[1.6] font-medium text-muted-foreground"
-            >
-              Hey! I&apos;m Vansh, a CS student at York University who likes building things that have to survive{" "}
-              <TimelineContent
-                as="span"
-                animationNum={1}
-                timelineRef={heroRef}
-                customVariants={textVariants}
-                className="text-amber-500 border-2 border-amber-500/40 inline border-dotted px-1.5 sm:px-2 rounded-md mx-0.5 sm:mx-1 bg-amber-500/5 shadow-[0_0_15px_rgba(245,158,11,0.1)]"
-              >
-                outside a demo
-              </TimelineContent>
-              . These days that means Tableau dashboards and workforce data at RBC, and telemetry for electric micromobility vehicles at Sarit, including a Raspberry Pi lock system wired into the actual hardware.
-              <br className="mb-6 block" />
-              I&apos;ve also spent time in research labs training{" "}
-              <TimelineContent
-                as="span"
-                animationNum={2}
-                timelineRef={heroRef}
-                customVariants={textVariants}
-                className="text-cyan-400 border-2 border-cyan-400/40 inline border-dotted px-1.5 sm:px-2 rounded-md mx-0.5 sm:mx-1 bg-cyan-400/5 shadow-[0_0_15px_rgba(34,211,238,0.1)]"
-              >
-                YOLO models
-              </TimelineContent>{" "}
-              on drone traffic footage, and using deep learning to map 5G electromagnetic fields. Somewhere in between I shipped ConsultHub, a full-stack booking platform, and somehow still help keep a campus library (and an AI club) running.
-              <br className="mb-6 block" />
-              When I&apos;m offline, I&apos;m usually deep in{" "}
-              <TimelineContent
-                as="span"
-                animationNum={3}
-                timelineRef={heroRef}
-                customVariants={textVariants}
-                className="text-rose-500 border-2 border-rose-500/40 inline border-dotted px-1.5 sm:px-2 rounded-md mx-0.5 sm:mx-1 bg-rose-500/5 shadow-[0_0_15px_rgba(244,63,94,0.1)]"
-              >
-                Formula 1
-              </TimelineContent>{" "}
-              strategy debates, hunting for niche{" "}
-              <TimelineContent
-                as="span"
-                animationNum={4}
-                timelineRef={heroRef}
-                customVariants={textVariants}
-                className="text-emerald-400 border-2 border-emerald-400/40 inline border-dotted px-1.5 sm:px-2 rounded-md mx-0.5 sm:mx-1 bg-emerald-400/5 shadow-[0_0_15px_rgba(52,211,153,0.1)]"
-              >
-                fragrances
-              </TimelineContent>
-              , or tweaking a UI until it finally feels right.
-            </TimelineContent>
-          </div>
-        </div>
+    <section
+      id="about"
+      className="relative z-10 w-full px-5 py-20 sm:px-8 sm:py-28"
+    >
+      <div className="mx-auto w-full max-w-3xl">
+        <Reveal>
+          <h2 className="apple-title text-[clamp(2rem,4vw,3rem)] text-[var(--ink)]">
+            About
+          </h2>
+          <p className="apple-body mt-3 max-w-xl text-base sm:text-lg">
+            A little context before the rest of the scroll.
+          </p>
+        </Reveal>
+
+        <Reveal delay={0.06} className="mt-10 sm:mt-12">
+          <p className="text-[1.05rem] leading-[1.65] tracking-[-0.01em] text-[var(--ink)] sm:text-[1.25rem] sm:leading-[1.6]">
+            {portfolioData.about.description}
+          </p>
+        </Reveal>
       </div>
     </section>
   );

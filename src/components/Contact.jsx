@@ -1,33 +1,104 @@
+import { useState } from 'react';
+import { Check, Copy, Download, Github, Linkedin, Mail } from 'lucide-react';
 import { portfolioData } from '../data/portfolio';
-import { Github, Linkedin, Mail } from 'lucide-react';
+import { RESUME_FILENAME, RESUME_URL } from '../lib/navigation';
+import Reveal from './Reveal';
 
 export default function Contact() {
+  const [copied, setCopied] = useState(false);
+
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(portfolioData.contact.email);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1600);
+    } catch {
+      window.location.href = `mailto:${portfolioData.contact.email}`;
+    }
+  };
+
   return (
-    <section id="contact" className="min-h-[60vh] flex flex-col justify-center px-4 sm:px-6 py-16 sm:py-24 pb-32 sm:pb-24 relative z-10">
-      <div className="max-w-4xl mx-auto w-full text-center">
-        <h2 className="text-2xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-foreground mb-3 sm:mb-4">Let's Connect</h2>
-        <p className="text-sm md:text-base text-muted-foreground mb-8 sm:mb-12 max-w-2xl mx-auto leading-relaxed px-2">
-          Say hi — I actually reply.
-        </p>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
-          <button
-            onClick={() => window.location.href = `mailto:${portfolioData.contact.email}`}
-            className="rounded-lg bg-primary px-6 sm:px-8 py-3.5 sm:py-4 text-sm sm:text-base font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 active:scale-[0.98] transition-all hover:scale-105 w-full sm:w-auto min-h-[48px] inline-flex justify-center items-center gap-3 cursor-pointer"
+    <section
+      id="contact"
+      className="apple-section relative z-10 pb-[clamp(4rem,3rem+3vw,7rem)]"
+    >
+      <div className="apple-panel apple-panel-muted text-center">
+        <Reveal className="apple-section-head !mb-0">
+          <p className="apple-kicker mb-3">Contact</p>
+          <h2 className="apple-display text-[clamp(2.25rem,1.5rem+3.5vw,4.25rem)] text-[var(--ink)]">
+            Let&apos;s connect
+          </h2>
+          <p className="apple-body mx-auto mt-4 max-w-xl text-[clamp(0.95rem,0.85rem+0.4vw,1.125rem)]">
+            Say hi. I actually reply.
+          </p>
+        </Reveal>
+
+        <Reveal
+          delay={0.06}
+          className="mt-8 flex flex-col items-center gap-3 sm:mt-10 sm:gap-4"
+        >
+          <a
+            href={`mailto:${portfolioData.contact.email}`}
+            className="apple-press apple-capsule apple-capsule-block max-w-full gap-2 overflow-hidden bg-[var(--ink)] text-white"
           >
-            <Mail className="h-5 w-5 shrink-0" />
-            Say Hello
-          </button>
-          <div className="flex gap-4 sm:gap-6 mt-2 sm:mt-0">
-            <button onClick={() => window.open(portfolioData.contact.github, '_blank')} className="min-h-[48px] min-w-[48px] p-4 bg-card border border-border rounded-full text-muted-foreground hover:text-foreground hover:border-primary/50 hover:bg-card/80 active:scale-95 transition-all hover:scale-110 shadow-sm cursor-pointer flex items-center justify-center">
-              <span className="sr-only">GitHub</span>
-              <Github className="h-6 w-6" />
+            <Mail className="h-4 w-4 shrink-0" aria-hidden="true" />
+            <span className="truncate">{portfolioData.contact.email}</span>
+          </a>
+
+          <div className="flex w-full max-w-md flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
+            <button
+              type="button"
+              onClick={copyEmail}
+              className="apple-press apple-capsule apple-capsule-block gap-2 border border-black/10 bg-white text-[var(--ink)]"
+            >
+              {copied ? (
+                <Check className="h-4 w-4" aria-hidden="true" />
+              ) : (
+                <Copy className="h-4 w-4" aria-hidden="true" />
+              )}
+              {copied ? 'Copied' : 'Copy email'}
             </button>
-            <button onClick={() => window.open(portfolioData.contact.linkedin, '_blank')} className="min-h-[48px] min-w-[48px] p-4 bg-card border border-border rounded-full text-muted-foreground hover:text-foreground hover:border-primary/50 hover:bg-card/80 active:scale-95 transition-all hover:scale-110 shadow-sm cursor-pointer flex items-center justify-center">
-              <span className="sr-only">LinkedIn</span>
-              <Linkedin className="h-6 w-6" />
-            </button>
+            <a
+              href={RESUME_URL}
+              download={RESUME_FILENAME}
+              className="apple-press apple-capsule apple-capsule-block gap-2 border border-black/10 bg-white text-[var(--ink)]"
+            >
+              <Download className="h-4 w-4" aria-hidden="true" />
+              Resume
+            </a>
           </div>
-        </div>
+
+          <div className="mt-2 flex items-center gap-2">
+            <a
+              href={portfolioData.contact.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="apple-press inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full text-[var(--ink-secondary)] hover:text-[var(--ink)]"
+            >
+              <span className="sr-only">GitHub</span>
+              <Github className="h-5 w-5" />
+            </a>
+            <a
+              href={portfolioData.contact.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="apple-press inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full text-[var(--ink-secondary)] hover:text-[var(--ink)]"
+            >
+              <span className="sr-only">LinkedIn</span>
+              <Linkedin className="h-5 w-5" />
+            </a>
+          </div>
+
+          <p className="mt-8 text-[13px] text-[var(--ink-secondary)]">
+            Looking for the previous version?{' '}
+            <a
+              href="/v1/"
+              className="font-medium text-[var(--ink)] underline-offset-4 hover:underline"
+            >
+              View archive
+            </a>
+          </p>
+        </Reveal>
       </div>
     </section>
   );
