@@ -88,16 +88,6 @@ export default function Contact() {
               <Linkedin className="h-5 w-5" />
             </a>
           </div>
-
-          <p className="mt-8 text-[13px] text-[var(--ink-secondary)]">
-            Looking for the previous version?{' '}
-            <a
-              href="/v1/"
-              className="font-medium text-[var(--ink)] underline-offset-4 hover:underline"
-            >
-              View archive
-            </a>
-          </p>
         </Reveal>
       </div>
     </section>
