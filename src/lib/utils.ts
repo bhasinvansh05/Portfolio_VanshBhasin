@@ -5,19 +5,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export type GlassCardIcon =
-  | "briefcase"
-  | "hand"
-  | "drone"
-  | "radio"
-  | "bike"
-
-export type GlassCardItem = {
+export type Project = {
   id: number
   title: string
   description: string
-  color: string
-  icon: GlassCardIcon
   /** End year for sorting “most recent” (higher = newer). */
   year: number
   href?: string
@@ -26,15 +17,12 @@ export type GlassCardItem = {
   details?: string[]
 }
 
-/** Default project card data used by Featured Work / demos. */
-export const cardData: GlassCardItem[] = [
+export const projects: Project[] = [
   {
     id: 1,
     title: "ConsultHub",
     description:
       "Full-stack consulting booking platform: Spring Boot REST API, PostgreSQL, Dockerized React frontend, and role-based flows for clients, consultants, and admins.",
-    color: "#000000",
-    icon: "briefcase",
     year: 2026,
     href: "https://consulthub.vanshbhasin.dev",
     tags: ["Spring Boot", "PostgreSQL"],
@@ -51,8 +39,6 @@ export const cardData: GlassCardItem[] = [
     title: "VisionCalc",
     description:
       "In-browser hand-gesture calculator: count fingers for digits and signal operators with MediaPipe HandLandmarker — no backend, just webcam and computer vision.",
-    color: "#000000",
-    icon: "hand",
     year: 2026,
     href: "https://visioncalc.vanshbhasin.dev",
     tags: ["Computer Vision", "MediaPipe"],
@@ -69,8 +55,6 @@ export const cardData: GlassCardItem[] = [
     title: "Drone Traffic Analysis Pipeline",
     description:
       "Scalable computer vision system for analyzing drone-captured traffic footage using YOLO models.",
-    color: "#000000",
-    icon: "drone",
     year: 2025,
     tags: ["Computer Vision", "YOLO"],
     meta: "Elder Lab · 2025",
@@ -85,8 +69,6 @@ export const cardData: GlassCardItem[] = [
     title: "EMF Exposure Prediction System",
     description:
       "Deep learning research for predicting electromagnetic field exposure using generative data augmentation.",
-    color: "#000000",
-    icon: "radio",
     year: 2025,
     tags: ["Deep Learning", "Data Analytics"],
     meta: "NGWN Lab · 2024–2025",
@@ -101,8 +83,6 @@ export const cardData: GlassCardItem[] = [
     title: "Micromobility Telemetry Platform",
     description:
       "Software systems supporting telemetry, safety, and data processing for electric micro-mobility vehicles.",
-    color: "#000000",
-    icon: "bike",
     year: 2026,
     tags: ["IoT", "Software Integration"],
     meta: "Sarit Micromobility · 2026",
@@ -115,15 +95,13 @@ export const cardData: GlassCardItem[] = [
 ]
 
 /** Newest first (year, then id). */
-export function getProjectsByRecency(
-  projects: GlassCardItem[] = cardData,
-): GlassCardItem[] {
-  return [...projects].sort((a, b) => b.year - a.year || b.id - a.id)
+export function getProjectsByRecency(source: Project[] = projects): Project[] {
+  return [...source].sort((a, b) => b.year - a.year || b.id - a.id)
 }
 
 export function getRecentProjects(
   count = 3,
-  projects: GlassCardItem[] = cardData,
-): GlassCardItem[] {
-  return getProjectsByRecency(projects).slice(0, count)
+  source: Project[] = projects,
+): Project[] {
+  return getProjectsByRecency(source).slice(0, count)
 }
