@@ -1,6 +1,7 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { SPRING } from '../lib/motion';
 
-/** Critically damped spring reveal — Apple default (bounce 0, response ~0.4). */
+/** Scroll reveal on the house spring: critically damped, no overshoot. */
 export default function Reveal({
   children,
   className,
@@ -22,7 +23,7 @@ export default function Reveal({
       initial={{ opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-8% 0px -8% 0px' }}
-      transition={{ type: 'spring', bounce: 0, duration: 0.4, delay }}
+      transition={{ ...SPRING.ui, delay }}
     >
       {children}
     </Tag>
