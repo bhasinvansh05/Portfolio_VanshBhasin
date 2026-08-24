@@ -1,21 +1,34 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Check, Copy, Download, Github, Linkedin, Mail } from 'lucide-react';
 import { portfolioData } from '../data/portfolio';
 import { RESUME_FILENAME, RESUME_URL } from '../lib/navigation';
 import Reveal from './Reveal';
 
+const STATUS_MESSAGE = {
+  copied: 'Email copied to clipboard.',
+  error: "Couldn't reach the clipboard — use the email button above.",
+};
+
 export default function Contact() {
-  const [copied, setCopied] = useState(false);
+  const [status, setStatus] = useState('idle');
+  const timerRef = useRef(0);
+
+  useEffect(() => () => window.clearTimeout(timerRef.current), []);
 
   const copyEmail = async () => {
+    window.clearTimeout(timerRef.current);
     try {
       await navigator.clipboard.writeText(portfolioData.contact.email);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 1600);
+      setStatus('copied');
+      // Fired with the visual change, on the frame the copy actually commits.
+      navigator.vibrate?.(8);
     } catch {
-      window.location.href = `mailto:${portfolioData.contact.email}`;
+      setStatus('error');
     }
+    timerRef.current = window.setTimeout(() => setStatus('idle'), 2600);
   };
+
+  const copied = status === 'copied';
 
   return (
     <section
@@ -66,6 +79,14 @@ export default function Contact() {
               <Download className="h-4 w-4" aria-hidden="true" />
               Resume
             </a>
+          </div>
+
+          <div
+            role="status"
+            aria-live="polite"
+            className="min-h-[1.25rem] text-[0.8125rem] font-medium text-[var(--ink-secondary)]"
+          >
+            {STATUS_MESSAGE[status] ?? ''}
           </div>
 
           <div className="mt-2 flex items-center gap-2">
