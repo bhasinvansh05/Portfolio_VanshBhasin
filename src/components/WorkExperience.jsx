@@ -18,7 +18,7 @@ export default function WorkExperience() {
               <li className="border-t border-black/10 py-6 first:border-t-0 first:pt-0 sm:py-8">
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between sm:gap-8">
                   <div className="min-w-0">
-                    <h3 className="text-[clamp(1.15rem,1rem+0.8vw,1.5rem)] font-semibold tracking-[-0.02em] text-[var(--ink)]">
+                    <h3 className="apple-title-sm text-[clamp(1.15rem,1rem+0.8vw,1.5rem)] text-[var(--ink)]">
                       {job.company}
                     </h3>
                     <p className="mt-1 text-[clamp(0.9rem,0.82rem+0.3vw,1rem)] font-semibold text-[var(--ink-secondary)]">

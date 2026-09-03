@@ -2,13 +2,12 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { Download } from 'lucide-react';
 import { portfolioData } from '../data/portfolio';
 import { RESUME_FILENAME, RESUME_URL, scrollToId } from '../lib/navigation';
+import { FADE, SPRING } from '../lib/motion';
 
 export default function Hero() {
   const reduceMotion = useReducedMotion();
 
-  const spring = reduceMotion
-    ? { duration: 0.2 }
-    : { type: 'spring', bounce: 0, duration: 0.45 };
+  const spring = reduceMotion ? FADE.ui : SPRING.ui;
 
   return (
     <section

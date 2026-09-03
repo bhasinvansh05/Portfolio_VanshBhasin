@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { scrollToId } from '@/lib/navigation';
+import { FADE, SPRING } from '@/lib/motion';
 
 const links = [
   { label: 'Experience', href: '#experience' },
@@ -68,11 +69,7 @@ export default function AppleNav() {
       <motion.nav
         initial={reduceMotion ? false : { y: -16, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={
-          reduceMotion
-            ? { duration: 0.2 }
-            : { type: 'spring', bounce: 0, duration: 0.4 }
-        }
+        transition={reduceMotion ? FADE.ui : SPRING.ui}
         className={cn(
           'pointer-events-auto apple-material apple-nav-capsule mx-auto flex items-center',
           scrolled ? 'apple-material-heavy' : '',
@@ -107,11 +104,7 @@ export default function AppleNav() {
                   <motion.span
                     layoutId={reduceMotion ? undefined : 'nav-pill'}
                     className="absolute inset-0 -z-10 rounded-full bg-black/[0.06]"
-                    transition={
-                      reduceMotion
-                        ? { duration: 0 }
-                        : { type: 'spring', bounce: 0, duration: 0.35 }
-                    }
+                    transition={reduceMotion ? { duration: 0 } : SPRING.snappy}
                   />
                 )}
                 {link.label}
