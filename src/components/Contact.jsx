@@ -4,9 +4,11 @@ import { portfolioData } from '../data/portfolio';
 import { RESUME_FILENAME, RESUME_URL } from '../lib/navigation';
 import Reveal from './Reveal';
 
+/* Kept short enough to sit on one line at the narrowest supported width, so
+   showing a message never pushes the rest of the section down. */
 const STATUS_MESSAGE = {
-  copied: 'Email copied to clipboard.',
-  error: "Couldn't reach the clipboard — use the email button above.",
+  copied: 'Copied to clipboard',
+  error: "Couldn't copy — use the button above",
 };
 
 export default function Contact() {
@@ -50,46 +52,50 @@ export default function Contact() {
           delay={0.06}
           className="mt-8 flex flex-col items-center gap-3 sm:mt-10 sm:gap-4"
         >
-          <a
-            href={`mailto:${portfolioData.contact.email}`}
-            className="apple-press apple-capsule apple-capsule-block max-w-full gap-2 overflow-hidden bg-[var(--ink)] text-white"
-          >
-            <Mail className="h-4 w-4 shrink-0" aria-hidden="true" />
-            <span className="truncate">{portfolioData.contact.email}</span>
-          </a>
-
-          <div className="flex w-full max-w-md flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
-            <button
-              type="button"
-              onClick={copyEmail}
-              className="apple-press apple-capsule apple-capsule-block gap-2 border border-black/10 bg-white text-[var(--ink)]"
-            >
-              {copied ? (
-                <Check className="h-4 w-4" aria-hidden="true" />
-              ) : (
-                <Copy className="h-4 w-4" aria-hidden="true" />
-              )}
-              {copied ? 'Copied' : 'Copy email'}
-            </button>
+          {/* All three controls share one column width so their edges line up,
+              and the secondary pair splits that width evenly. */}
+          <div className="flex w-full max-w-[min(100%,26rem)] flex-col gap-3">
             <a
-              href={RESUME_URL}
-              download={RESUME_FILENAME}
-              className="apple-press apple-capsule apple-capsule-block gap-2 border border-black/10 bg-white text-[var(--ink)]"
+              href={`mailto:${portfolioData.contact.email}`}
+              className="apple-press apple-capsule w-full gap-2 overflow-hidden bg-[var(--ink)] text-white"
             >
-              <Download className="h-4 w-4" aria-hidden="true" />
-              Resume
+              <Mail className="h-4 w-4 shrink-0" aria-hidden="true" />
+              <span className="truncate">{portfolioData.contact.email}</span>
             </a>
+
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <button
+                type="button"
+                onClick={copyEmail}
+                className="apple-press apple-capsule w-full gap-2 border border-black/10 bg-white text-[var(--ink)] sm:flex-1"
+              >
+                {copied ? (
+                  <Check className="h-4 w-4" aria-hidden="true" />
+                ) : (
+                  <Copy className="h-4 w-4" aria-hidden="true" />
+                )}
+                {copied ? 'Copied' : 'Copy email'}
+              </button>
+              <a
+                href={RESUME_URL}
+                download={RESUME_FILENAME}
+                className="apple-press apple-capsule w-full gap-2 border border-black/10 bg-white text-[var(--ink)] sm:flex-1"
+              >
+                <Download className="h-4 w-4" aria-hidden="true" />
+                Resume
+              </a>
+            </div>
           </div>
 
           <div
             role="status"
             aria-live="polite"
-            className="min-h-[1.25rem] text-[0.8125rem] font-medium text-[var(--ink-secondary)]"
+            className="min-h-[1.25rem] w-full text-center text-[0.8125rem] font-medium leading-tight text-[var(--ink-secondary)]"
           >
             {STATUS_MESSAGE[status] ?? ''}
           </div>
 
-          <div className="mt-2 flex items-center gap-2">
+          <div className="flex items-center gap-2">
             <a
               href={portfolioData.contact.github}
               target="_blank"
