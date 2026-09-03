@@ -3,6 +3,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { scrollToId } from '@/lib/navigation';
 import { FADE, SPRING } from '@/lib/motion';
+import { IS_PRERENDERED, IS_STATIC_RENDER } from '@/lib/prerendered';
 
 const links = [
   { label: 'Experience', href: '#experience' },
@@ -67,7 +68,11 @@ export default function AppleNav() {
   return (
     <header className="pointer-events-none fixed inset-x-0 top-0 z-50 px-[var(--section-gutter)] pt-[max(0.75rem,env(safe-area-inset-top))]">
       <motion.nav
-        initial={reduceMotion ? false : { y: -16, opacity: 0 }}
+        initial={
+          reduceMotion || IS_PRERENDERED || IS_STATIC_RENDER
+            ? false
+            : { y: -16, opacity: 0 }
+        }
         animate={{ y: 0, opacity: 1 }}
         transition={reduceMotion ? FADE.ui : SPRING.ui}
         className={cn(

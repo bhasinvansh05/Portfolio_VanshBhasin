@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<!--
+  Source for public/og.png, the Open Graph / Twitter card image.
+
+  Rendered to PNG by `npm run og:image`, which needs a local Chrome. It is not
+  part of `npm run build`, so CI never has to install a browser; regenerate and
+  commit public/og.png whenever this file or the site's wording changes.
+
+  Colours are copied from the design tokens in src/index.css.
+-->
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    :root {
+      --cream: #f7f3ec;
+      --canvas: #ebe8e2;
+      --ink: #0b0b0d;
+      --ink-secondary: #3a3a3c;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 1200px;
+      height: 630px;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background:
+        radial-gradient(120% 120% at 50% 0%, var(--cream) 0%, var(--canvas) 100%);
+      color: var(--ink);
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+      font-feature-settings: "cv11", "ss01";
+      padding: 88px 96px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .kicker {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-secondary);
+    }
+
+    h1 {
+      margin-top: 28px;
+      font-size: 148px;
+      font-weight: 600;
+      line-height: 0.94;
+      letter-spacing: -0.045em;
+    }
+
+    .tagline {
+      margin-top: 32px;
+      font-size: 40px;
+      font-weight: 500;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: var(--ink-secondary);
+    }
+
+    footer {
+      position: absolute;
+      left: 96px;
+      right: 96px;
+      bottom: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 26px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--ink-secondary);
+    }
+
+    .rule {
+      position: absolute;
+      left: 96px;
+      right: 96px;
+      bottom: 128px;
+      height: 1px;
+      background: rgba(0, 0, 0, 0.12);
+    }
+  </style>
+</head>
+
+<body>
+  <p class="kicker">CS &middot; York University</p>
+  <h1>Vansh Bhasin</h1>
+  <p class="tagline">Software that survives outside a demo.</p>
+
+  <div class="rule"></div>
+  <footer>
+    <span>vanshbhasin.dev</span>
+    <span>Engineering &middot; Data &middot; Computer vision</span>
+  </footer>
+</body>
+
+</html>

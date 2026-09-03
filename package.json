@@ -5,8 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "build": "vite build && npm run build:prerender-bundle && node scripts/prerender.mjs",
+    "build:prerender-bundle": "vite build --ssr src/prerender-entry.jsx --outDir .prerender --emptyOutDir",
+    "preview": "vite preview",
+    "test": "node --test scripts/agent-readiness.test.mjs",
+    "og:image": "node scripts/generate-og-image.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",
@@ -25,6 +28,7 @@
     "autoprefixer": "^10.4.19",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.4",
+    "turndown": "^7.2.4",
     "typescript": "^5.9.3",
     "vite": "^5.2.0"
   }

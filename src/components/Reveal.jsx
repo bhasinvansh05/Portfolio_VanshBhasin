@@ -1,5 +1,6 @@
 import { motion, useReducedMotion } from 'framer-motion';
 import { SPRING } from '../lib/motion';
+import { IS_STATIC_RENDER } from '../lib/prerendered';
 
 /** Scroll reveal on the house spring: critically damped, no overshoot. */
 export default function Reveal({
@@ -9,7 +10,7 @@ export default function Reveal({
   y = 18,
   as = 'div',
 }) {
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = useReducedMotion() || IS_STATIC_RENDER;
   const Tag = motion[as] || motion.div;
 
   if (reduceMotion) {

@@ -3,9 +3,11 @@ import { Download } from 'lucide-react';
 import { portfolioData } from '../data/portfolio';
 import { RESUME_FILENAME, RESUME_URL, scrollToId } from '../lib/navigation';
 import { FADE, SPRING } from '../lib/motion';
+import { IS_PRERENDERED, IS_STATIC_RENDER } from '../lib/prerendered';
 
 export default function Hero() {
   const reduceMotion = useReducedMotion();
+  const skipEntrance = reduceMotion || IS_PRERENDERED || IS_STATIC_RENDER;
 
   const spring = reduceMotion ? FADE.ui : SPRING.ui;
 
@@ -16,7 +18,7 @@ export default function Hero() {
     >
       <div className="mx-auto w-full max-w-5xl text-center">
         <motion.p
-          initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+          initial={skipEntrance ? false : { opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ ...spring, delay: 0.02 }}
           className="apple-kicker mb-5"
@@ -25,7 +27,7 @@ export default function Hero() {
         </motion.p>
 
         <motion.h1
-          initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+          initial={skipEntrance ? false : { opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ ...spring, delay: 0.06 }}
           className="apple-display mx-auto max-w-[16ch] text-[clamp(3rem,9vw,6.75rem)] text-[var(--ink)]"
@@ -34,7 +36,7 @@ export default function Hero() {
         </motion.h1>
 
         <motion.p
-          initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+          initial={skipEntrance ? false : { opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ ...spring, delay: 0.12 }}
           className="mx-auto mt-5 max-w-lg text-[clamp(1.05rem,0.95rem+0.5vw,1.25rem)] font-medium leading-snug tracking-[-0.015em] text-[var(--ink)] sm:mt-6"
@@ -44,7 +46,7 @@ export default function Hero() {
         </motion.p>
 
         <motion.div
-          initial={reduceMotion ? false : { opacity: 0, y: 14 }}
+          initial={skipEntrance ? false : { opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ ...spring, delay: 0.18 }}
           className="mt-9 flex flex-col items-center justify-center gap-3 sm:mt-10 sm:flex-row sm:gap-4"
