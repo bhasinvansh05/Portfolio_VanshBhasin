@@ -10,13 +10,14 @@
  * too, since they cannot be exercised against the deployed site from here.
  */
 import assert from 'node:assert/strict';
-import { existsSync, readFileSync } from 'node:fs';
+import { createReadStream, existsSync, readFileSync, statSync } from 'node:fs';
+import { createServer } from 'node:http';
 import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
 import { PAGES, SAME_AS, SITE, absoluteUrl, markdownPathFor } from '../src/lib/site.js';
-import {
+import worker, {
   markdownPathFor as workerMarkdownPathFor,
   parseAccept,
   prefersMarkdown,
@@ -57,6 +58,55 @@ const metaContent = (html, attribute, name) => {
 const linkHref = (html, rel) =>
   html.match(new RegExp(`<link[^>]+rel="${rel}"[^>]+href="([^"]*)"`, 'i'))?.[1] ??
   null;
+
+const CONTENT_TYPES = {
+  '.html': 'text/html; charset=utf-8',
+  '.md': 'text/markdown; charset=utf-8',
+  '.txt': 'text/plain; charset=utf-8',
+  '.xml': 'application/xml',
+  '.css': 'text/css; charset=utf-8',
+  '.js': 'text/javascript; charset=utf-8',
+  '.png': 'image/png',
+  '.pdf': 'application/pdf',
+};
+
+/**
+ * Serves `dist/` the way GitHub Pages does — directory index files, and
+ * 404.html with a real 404 status — so the Cloudflare Worker can be exercised
+ * without a network or a deployment.
+ */
+function startStaticServer() {
+  const server = createServer((req, res) => {
+    const { pathname } = new URL(req.url, 'http://localhost');
+    let file = path.join(DIST, decodeURIComponent(pathname));
+
+    if (existsSync(file) && statSync(file).isDirectory()) {
+      file = path.join(file, 'index.html');
+    }
+
+    if (!file.startsWith(DIST) || !existsSync(file) || !statSync(file).isFile()) {
+      res.writeHead(404, { 'content-type': CONTENT_TYPES['.html'] });
+      createReadStream(path.join(DIST, '404.html')).pipe(res);
+      return;
+    }
+
+    res.writeHead(200, {
+      'content-type':
+        CONTENT_TYPES[path.extname(file)] ?? 'application/octet-stream',
+      vary: 'Accept-Encoding',
+    });
+    createReadStream(file).pipe(res);
+  });
+
+  return new Promise((resolve) => {
+    server.listen(0, '127.0.0.1', () =>
+      resolve({
+        origin: `http://127.0.0.1:${server.address().port}`,
+        close: () => new Promise((done) => server.close(done)),
+      }),
+    );
+  });
+}
 
 /** Every page rendered to HTML, including the 404 that is not in the sitemap. */
 const HTML_PAGES = [
@@ -497,6 +547,49 @@ test('Accept negotiation prefers markdown only when asked', async (t) => {
     assert.equal(workerMarkdownPathFor('/about'), '/about.md');
     assert.equal(workerMarkdownPathFor('/index.html'), '/index.md');
     assert.equal(workerMarkdownPathFor(''), '/index.md');
+  });
+
+  await t.test('the worker serves the right variant end to end', async () => {
+    // The worker is pure request-in/response-out, so it can run against a
+    // throwaway server that behaves like GitHub Pages.
+    const { origin, close } = await startStaticServer();
+
+    try {
+      const markdown = await worker.fetch(
+        new Request(`${origin}/about/`, { headers: { Accept: 'text/markdown' } }),
+      );
+      assert.equal(markdown.status, 200);
+      assert.equal(
+        markdown.headers.get('content-type'),
+        'text/markdown; charset=utf-8',
+      );
+      assert.equal(markdown.headers.get('vary'), 'Accept, Accept-Encoding');
+      assert.match(markdown.headers.get('link'), /rel="alternate"/);
+      assert.match(await markdown.text(), /^#{1,2} /m);
+
+      const html = await worker.fetch(
+        new Request(`${origin}/about/`, {
+          headers: { Accept: 'text/html,application/xhtml+xml,*/*;q=0.8' },
+        }),
+      );
+      assert.equal(html.status, 200);
+      assert.match(html.headers.get('content-type'), /text\/html/);
+      assert.equal(html.headers.get('vary'), 'Accept, Accept-Encoding');
+      assert.match(await html.text(), /<!DOCTYPE html>/i);
+
+      // A 404 stays a 404 rather than becoming a soft 200.
+      const missing = await worker.fetch(
+        new Request(`${origin}/nope`, { headers: { Accept: 'text/markdown' } }),
+      );
+      assert.equal(missing.status, 404);
+
+      // Assets are passed through untouched.
+      const asset = await worker.fetch(new Request(`${origin}/og.png`));
+      assert.equal(asset.status, 200);
+      assert.equal(asset.headers.get('content-type'), 'image/png');
+    } finally {
+      await close();
+    }
   });
 
   await t.test('assets and generated files have no mirror', () => {

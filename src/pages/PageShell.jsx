@@ -50,12 +50,14 @@ export default function PageShell({ path, kicker, title, lede, children }) {
 
       <main id="main" className="apple-section relative z-0">
         <div className="apple-panel">
-          <div className="apple-section-head">
+          {/* Same max-width column as Prose, so the heading, the lede and the
+              body copy all share one left edge. */}
+          <div className="apple-section-head mx-auto max-w-2xl">
             <p className="apple-kicker mb-3">{kicker}</p>
             <h1 className="apple-title text-[clamp(1.75rem,1.2rem+2.2vw,3rem)] text-[var(--ink)]">
               {title}
             </h1>
-            <p className="apple-body mx-auto mt-4 max-w-2xl text-[var(--ink-secondary)]">
+            <p className="apple-body mt-4 text-[var(--ink-secondary)]">
               {lede}
             </p>
           </div>

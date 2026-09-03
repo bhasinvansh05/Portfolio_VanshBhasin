@@ -168,9 +168,6 @@ function headTagsFor(page, { lastmod, noindex = false } = {}) {
     `<link rel="alternate" type="text/plain" href="${escapeAttribute(
       absoluteUrl('/llms.txt'),
     )}" title="llms.txt" />`,
-    `<link rel="sitemap" type="application/xml" href="${escapeAttribute(
-      absoluteUrl('/sitemap.xml'),
-    )}" />`,
     `<meta property="og:type" content="${isHome ? 'profile' : 'website'}" />`,
     `<meta property="og:site_name" content="${escapeAttribute(SITE.brand)}" />`,
     `<meta property="og:title" content="${escapeAttribute(page.title)}" />`,
