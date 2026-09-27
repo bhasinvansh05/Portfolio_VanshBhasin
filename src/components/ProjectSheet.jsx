@@ -303,6 +303,18 @@ export default function ProjectSheet({ project, originRect, titleId, onClosed })
               <X className="h-4 w-4" />
             </button>
           </div>
+
+          {project.href ? (
+            <a
+              href={project.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="apple-press apple-capsule mb-4 gap-1.5 bg-[var(--ink)] text-white"
+            >
+              Open project
+              <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+            </a>
+          ) : null}
         </div>
 
         <div
@@ -333,18 +345,6 @@ export default function ProjectSheet({ project, originRect, titleId, onClosed })
               </p>
             ))}
           </div>
-
-          {project.href ? (
-            <a
-              href={project.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="apple-press apple-capsule mt-8 gap-1.5 bg-[var(--ink)] text-white"
-            >
-              Open project
-              <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
-            </a>
-          ) : null}
         </div>
       </motion.div>
     </div>,
