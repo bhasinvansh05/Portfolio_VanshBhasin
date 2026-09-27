@@ -19,17 +19,17 @@ export const portfolioData = {
     },
     {
       id: 2,
-      company: "Sarit Micromobility",
-      role: "Research Assistant (Mobility Systems & Software Integration)",
-      duration: "Jan 2026 - Present",
-      description: "Contributed to the development and testing of software systems supporting telemetry, safety, and data processing for electric micro-mobility vehicles."
-    },
-    {
-      id: 3,
       company: "York University Library",
       role: "Library Facilities Lead Hand",
       duration: "Sept 2024 - Present",
       description: "Supporting daily library operations through patron assistance, policy communication, and way-finding guidance. Leading staff coordination and special library projects to ensure efficient facility operations."
+    },
+    {
+      id: 3,
+      company: "Sarit Micromobility",
+      role: "Research Assistant (Mobility Systems & Software Integration)",
+      duration: "Jan 2026 - April 2026",
+      description: "Contributed to the development and testing of software systems supporting telemetry, safety, and data processing for electric micro-mobility vehicles."
     },
     {
       id: 4,
