@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { animate, motion, useMotionValue, useReducedMotion } from 'framer-motion';
-import { ArrowUpRight, X } from 'lucide-react';
+import { animate, motion, useMotionValue, useReducedMotion, useTransform } from 'framer-motion';
+import { ArrowUpRight, Play, X } from 'lucide-react';
 import {
   DRAG_THRESHOLD,
   projectMomentum,
@@ -11,7 +11,7 @@ import {
 import { FADE, SPRING } from '../lib/motion';
 
 /** Fraction of sheet height the projected release point must pass to dismiss. */
-const DISMISS_FRACTION = 0.4;
+const DISMISS_FRACTION = 0.38;
 
 /** Desktop dialog geometry, needed to anchor transform-origin to the trigger. */
 const DIALOG_MAX_WIDTH = 512;
@@ -26,8 +26,10 @@ export default function ProjectSheet({ project, originRect, titleId, onClosed })
   );
   const [state, setState] = useState('closed');
   const [dragging, setDragging] = useState(false);
+  const [demoOpen, setDemoOpen] = useState(false);
 
   const y = useMotionValue(0);
+  const dragScale = useTransform(y, [0, 420], [1, 0.96]);
   const sheetRef = useRef(null);
   const scrollRef = useRef(null);
   const closeRef = useRef(null);
@@ -40,6 +42,7 @@ export default function ProjectSheet({ project, originRect, titleId, onClosed })
      The desktop dialog is a pointer-precision surface and keeps click/Escape. */
   const canDrag = !isDesktop;
   const animatesY = canDrag && !reduceMotion;
+  const demoUrl = project.demoUrl || project.href;
 
   useEffect(() => {
     const mq = window.matchMedia('(min-width: 640px)');
@@ -180,7 +183,7 @@ export default function ProjectSheet({ project, originRect, titleId, onClosed })
     }
 
     // Snap to whichever target the flick was actually heading for.
-    const projected = y.get() + projectMomentum(velocity);
+    const projected = y.get() + projectMomentum(velocity, 0.995);
     if (projected > sheetHeight() * DISMISS_FRACTION) {
       requestClose(velocity);
       return;
@@ -263,7 +266,12 @@ export default function ProjectSheet({ project, originRect, titleId, onClosed })
         onAnimationComplete={(definition) => {
           if (definition === 'closed' && !animatesY) onClosed();
         }}
-        style={{ y, transformOrigin, willChange: 'transform' }}
+        style={{
+          y,
+          scale: canDrag && !reduceMotion ? dragScale : undefined,
+          transformOrigin,
+          willChange: 'transform',
+        }}
         className="apple-material-heavy relative z-10 flex max-h-[88dvh] w-full max-w-[min(100%,32rem)] flex-col rounded-t-[var(--radius)] sm:max-h-[85dvh] sm:rounded-[var(--radius)]"
       >
         <div
@@ -271,12 +279,24 @@ export default function ProjectSheet({ project, originRect, titleId, onClosed })
           onPointerMove={moveDrag}
           onPointerUp={endDrag}
           onPointerCancel={endDrag}
-          className={`shrink-0 px-[var(--panel-pad-x)] pt-2 sm:pt-[var(--panel-pad-x)] ${
+          className={`shrink-0 px-[var(--panel-pad-x)] pt-1.5 sm:pt-[var(--panel-pad-x)] ${
             canDrag ? 'touch-none' : ''
           } ${dragging ? 'cursor-grabbing' : canDrag ? 'cursor-grab' : ''}`}
         >
           {canDrag ? (
-            <div className="mx-auto mb-3 h-1 w-9 rounded-full bg-black/20" aria-hidden="true" />
+            <div
+              className="mx-auto mb-2 flex w-full max-w-[6rem] flex-col items-center gap-2 py-2"
+              aria-hidden="true"
+            >
+              <div
+                className={`h-1.5 w-12 rounded-full transition-colors ${
+                  dragging ? 'bg-black/35' : 'bg-black/22'
+                }`}
+              />
+              <p className="text-[0.65rem] font-semibold uppercase tracking-[0.08em] text-[var(--ink-secondary)]/80">
+                Drag to close
+              </p>
+            </div>
           ) : null}
 
           <div className="flex items-start justify-between gap-4 pb-4">
@@ -320,6 +340,44 @@ export default function ProjectSheet({ project, originRect, titleId, onClosed })
                   {tag}
                 </span>
               ))}
+            </div>
+          ) : null}
+
+          {demoUrl ? (
+            <div className="mb-6">
+              {!demoOpen ? (
+                <button
+                  type="button"
+                  onClick={() => setDemoOpen(true)}
+                  className="apple-press apple-capsule w-full gap-2 border border-black/10 bg-[var(--grey)] text-[var(--ink)]"
+                >
+                  <Play className="h-4 w-4" aria-hidden="true" />
+                  Try live demo
+                </button>
+              ) : (
+                <div className="overflow-hidden rounded-[calc(var(--radius)-0.35rem)] border border-black/10 bg-[var(--grey)]">
+                  <div className="flex items-center justify-between gap-2 border-b border-black/8 px-3 py-2">
+                    <p className="text-xs font-semibold text-[var(--ink-secondary)]">
+                      Live demo
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setDemoOpen(false)}
+                      className="apple-press rounded-full px-2.5 py-1 text-xs font-semibold text-[var(--ink-secondary)] hover:text-[var(--ink)]"
+                    >
+                      Hide
+                    </button>
+                  </div>
+                  <iframe
+                    title={`${project.title} live demo`}
+                    src={demoUrl}
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    className="aspect-[16/10] w-full bg-white"
+                    sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+                  />
+                </div>
+              )}
             </div>
           ) : null}
 

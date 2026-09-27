@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Check, Copy, Download, Github, Linkedin, Mail } from 'lucide-react';
 import { portfolioData } from '../data/portfolio';
 import { RESUME_FILENAME, RESUME_URL } from '../lib/navigation';
+import Magnetic from './Magnetic';
 import Reveal from './Reveal';
 
 /* Kept short enough to sit on one line at the narrowest supported width, so
@@ -37,7 +38,7 @@ export default function Contact() {
       id="contact"
       className="apple-section relative z-10 pb-[clamp(4rem,3rem+3vw,7rem)]"
     >
-      <div className="apple-panel apple-panel-muted text-center">
+      <div className="apple-panel apple-panel-muted apple-panel-lift text-center">
         <Reveal className="apple-section-head !mb-0">
           <p className="apple-kicker mb-3">Contact</p>
           <h2 className="apple-display text-[clamp(2.25rem,1.5rem+3.5vw,4.25rem)] text-[var(--ink)]">
@@ -55,35 +56,41 @@ export default function Contact() {
           {/* All three controls share one column width so their edges line up,
               and the secondary pair splits that width evenly. */}
           <div className="flex w-full max-w-[min(100%,26rem)] flex-col gap-3">
-            <a
-              href={`mailto:${portfolioData.contact.email}`}
-              className="apple-press apple-capsule w-full gap-2 overflow-hidden bg-[var(--ink)] text-white"
-            >
-              <Mail className="h-4 w-4 shrink-0" aria-hidden="true" />
-              <span className="truncate">{portfolioData.contact.email}</span>
-            </a>
+            <Magnetic strength={10} className="w-full">
+              <a
+                href={`mailto:${portfolioData.contact.email}`}
+                className="apple-press apple-capsule w-full gap-2 overflow-hidden bg-[var(--ink)] text-white"
+              >
+                <Mail className="h-4 w-4 shrink-0" aria-hidden="true" />
+                <span className="truncate">{portfolioData.contact.email}</span>
+              </a>
+            </Magnetic>
 
             <div className="flex flex-col gap-3 sm:flex-row">
-              <button
-                type="button"
-                onClick={copyEmail}
-                className="apple-press apple-capsule w-full gap-2 border border-black/10 bg-white text-[var(--ink)] sm:flex-1"
-              >
-                {copied ? (
-                  <Check className="h-4 w-4" aria-hidden="true" />
-                ) : (
-                  <Copy className="h-4 w-4" aria-hidden="true" />
-                )}
-                {copied ? 'Copied' : 'Copy email'}
-              </button>
-              <a
-                href={RESUME_URL}
-                download={RESUME_FILENAME}
-                className="apple-press apple-capsule w-full gap-2 border border-black/10 bg-white text-[var(--ink)] sm:flex-1"
-              >
-                <Download className="h-4 w-4" aria-hidden="true" />
-                Resume
-              </a>
+              <Magnetic strength={8} className="w-full sm:flex-1">
+                <button
+                  type="button"
+                  onClick={copyEmail}
+                  className="apple-press apple-capsule w-full gap-2 border border-black/10 bg-white text-[var(--ink)]"
+                >
+                  {copied ? (
+                    <Check className="h-4 w-4" aria-hidden="true" />
+                  ) : (
+                    <Copy className="h-4 w-4" aria-hidden="true" />
+                  )}
+                  {copied ? 'Copied' : 'Copy email'}
+                </button>
+              </Magnetic>
+              <Magnetic strength={8} className="w-full sm:flex-1">
+                <a
+                  href={RESUME_URL}
+                  download={RESUME_FILENAME}
+                  className="apple-press apple-capsule w-full gap-2 border border-black/10 bg-white text-[var(--ink)]"
+                >
+                  <Download className="h-4 w-4" aria-hidden="true" />
+                  Resume
+                </a>
+              </Magnetic>
             </div>
           </div>
 

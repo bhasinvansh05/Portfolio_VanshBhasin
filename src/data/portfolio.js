@@ -16,34 +16,59 @@ export const portfolioData = {
       duration: "May 2026 - Present",
       description:
         "Supporting workforce management initiatives within RBC’s Operation Process Engineering team by developing Tableau talent dashboards, cleaning and validating large datasets, and contributing to executive-level reports and presentations. Collaborating with internal stakeholders to streamline operational processes and surface actionable workforce insights using Python, SQL, and data visualization tools.",
+      highlights: [
+        "Building Tableau talent dashboards for workforce management in Operation Process Engineering.",
+        "Cleaning and validating large datasets that feed executive reports and presentations.",
+        "Partnering with stakeholders to surface actionable insights with Python, SQL, and visualization.",
+      ],
     },
     {
       id: 2,
       company: "York University Library",
       role: "Library Facilities Lead Hand",
       duration: "Sept 2024 - Present",
-      description: "Supporting daily library operations through patron assistance, policy communication, and way-finding guidance. Leading staff coordination and special library projects to ensure efficient facility operations."
+      description: "Supporting daily library operations through patron assistance, policy communication, and way-finding guidance. Leading staff coordination and special library projects to ensure efficient facility operations.",
+      highlights: [
+        "Leading day-to-day facility operations and staff coordination across campus library spaces.",
+        "Guiding patrons with policy communication and way-finding under real foot-traffic pressure.",
+        "Driving special library projects that keep spaces usable during peak academic periods.",
+      ],
     },
     {
       id: 3,
       company: "Sarit Micromobility",
       role: "Research Assistant (Mobility Systems & Software Integration)",
       duration: "Jan 2026 - April 2026",
-      description: "Contributed to the development and testing of software systems supporting telemetry, safety, and data processing for electric micro-mobility vehicles."
+      description: "Contributed to the development and testing of software systems supporting telemetry, safety, and data processing for electric micro-mobility vehicles.",
+      highlights: [
+        "Built and tested software for telemetry, safety, and data processing on electric micromobility vehicles.",
+        "Worked against real hardware constraints, including Raspberry Pi lock-system integration.",
+        "Helped validate data pipelines that have to survive outside a lab demo.",
+      ],
     },
     {
       id: 4,
       company: "Elder Lab, York University",
       role: "Research Assistant (Computer Vision & AI)",
       duration: "May 2025 - Sept 2025",
-      description: "Developing scalable computer vision pipelines to analyze drone traffic via YOLO models. Sped up deployment by 40% across hybrid cloud environments using Docker and CI/CD tools."
+      description: "Developing scalable computer vision pipelines to analyze drone traffic via YOLO models. Sped up deployment by 40% across hybrid cloud environments using Docker and CI/CD tools.",
+      highlights: [
+        "Trained and deployed YOLO pipelines on drone traffic footage for aerial surveillance analysis.",
+        "Cut deployment time by ~40% across hybrid cloud environments with Docker and CI/CD.",
+        "Built end-to-end processing workflows that scaled beyond a single notebook.",
+      ],
     },
     {
       id: 5,
       company: "NGWN Lab, York University",
       role: "Research Assistant (Deep Learning & Data Analytics)",
       duration: "May 2024 - April 2025",
-      description: "Conducted research on EMF exposure prediction using deep learning and generative data augmentation. Built data pipelines connecting Python, SQL, and Power BI, boosting validation workflows by 15%."
+      description: "Conducted research on EMF exposure prediction using deep learning and generative data augmentation. Built data pipelines connecting Python, SQL, and Power BI, boosting validation workflows by 15%.",
+      highlights: [
+        "Predicted EMF exposure with deep learning and generative data augmentation for 5G mapping.",
+        "Connected Python, SQL, and Power BI pipelines that improved validation throughput by ~15%.",
+        "Published findings on predictive modeling for electromagnetic field exposure.",
+      ],
     }
   ],
   projects: [

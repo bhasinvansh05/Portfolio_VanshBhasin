@@ -23,7 +23,7 @@ export default function Projects() {
 
   return (
     <section id="projects" className="apple-section relative z-10">
-      <div className="apple-panel">
+      <div className="apple-panel apple-panel-lift">
         <Reveal className="apple-section-head">
           <p className="apple-kicker mb-3">Work</p>
           <h2 className="apple-title text-[clamp(1.75rem,1.2rem+2.2vw,3rem)] text-[var(--ink)]">

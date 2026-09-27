@@ -3,10 +3,11 @@ import { Download } from 'lucide-react';
 import { portfolioData } from '../data/portfolio';
 import { RESUME_FILENAME, RESUME_URL, scrollToId } from '../lib/navigation';
 import { FADE, SPRING } from '../lib/motion';
+import HeroPresence from './HeroPresence';
+import Magnetic from './Magnetic';
 
 export default function Hero() {
   const reduceMotion = useReducedMotion();
-
   const spring = reduceMotion ? FADE.ui : SPRING.ui;
 
   return (
@@ -14,7 +15,9 @@ export default function Hero() {
       id="hero"
       className="relative flex min-h-[100dvh] w-full flex-col justify-center px-[var(--section-gutter)] pb-24 pt-28 sm:pb-28 sm:pt-32"
     >
-      <div className="mx-auto w-full max-w-5xl text-center">
+      <HeroPresence />
+
+      <div className="relative z-10 mx-auto w-full max-w-5xl text-center">
         <motion.p
           initial={reduceMotion ? false : { opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -49,25 +52,29 @@ export default function Hero() {
           transition={{ ...spring, delay: 0.18 }}
           className="mt-9 flex flex-col items-center justify-center gap-3 sm:mt-10 sm:flex-row sm:gap-4"
         >
-          <a
-            href={RESUME_URL}
-            download={RESUME_FILENAME}
-            className="apple-press apple-capsule apple-capsule-block gap-2 bg-[var(--ink)] text-white"
-          >
-            <Download className="h-4 w-4" aria-hidden="true" />
-            Download Resume
-          </a>
-          <button
-            type="button"
-            onClick={() =>
-              scrollToId('contact', {
-                behavior: reduceMotion ? 'auto' : 'smooth',
-              })
-            }
-            className="apple-press apple-capsule apple-capsule-block border border-black/15 bg-white text-[var(--ink)]"
-          >
-            Contact Me
-          </button>
+          <Magnetic strength={12} className="inline-flex w-full justify-center sm:w-auto">
+            <a
+              href={RESUME_URL}
+              download={RESUME_FILENAME}
+              className="apple-press apple-capsule apple-capsule-block gap-2 bg-[var(--ink)] text-white"
+            >
+              <Download className="h-4 w-4" aria-hidden="true" />
+              Download Resume
+            </a>
+          </Magnetic>
+          <Magnetic strength={12} className="inline-flex w-full justify-center sm:w-auto">
+            <button
+              type="button"
+              onClick={() =>
+                scrollToId('contact', {
+                  behavior: reduceMotion ? 'auto' : 'smooth',
+                })
+              }
+              className="apple-press apple-capsule apple-capsule-block border border-black/15 bg-white text-[var(--ink)]"
+            >
+              Contact Me
+            </button>
+          </Magnetic>
         </motion.div>
       </div>
     </section>

@@ -12,6 +12,8 @@ export type Project = {
   /** End year for sorting “most recent” (higher = newer). */
   year: number
   href?: string
+  /** Optional embed URL for in-sheet demo mode (defaults to href). */
+  demoUrl?: string
   tags?: string[]
   meta?: string
   details?: string[]
@@ -25,6 +27,7 @@ export const projects: Project[] = [
       "Full-stack consulting booking platform: Spring Boot REST API, PostgreSQL, Dockerized React frontend, and role-based flows for clients, consultants, and admins.",
     year: 2026,
     href: "https://consulthub.vanshbhasin.dev",
+    demoUrl: "https://consulthub.vanshbhasin.dev",
     tags: ["Spring Boot", "PostgreSQL"],
     meta: "EECS 3311 · 2025–2026",
     details: [
@@ -41,6 +44,7 @@ export const projects: Project[] = [
       "In-browser hand-gesture calculator: count fingers for digits and signal operators with MediaPipe HandLandmarker — no backend, just webcam and computer vision.",
     year: 2026,
     href: "https://visioncalc.vanshbhasin.dev",
+    demoUrl: "https://visioncalc.vanshbhasin.dev",
     tags: ["Computer Vision", "MediaPipe"],
     meta: "Personal · 2026",
     details: [
