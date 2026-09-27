@@ -360,13 +360,23 @@ export default function ProjectSheet({ project, originRect, titleId, onClosed })
                     <p className="text-xs font-semibold text-[var(--ink-secondary)]">
                       Live demo
                     </p>
-                    <button
-                      type="button"
-                      onClick={() => setDemoOpen(false)}
-                      className="apple-press rounded-full px-2.5 py-1 text-xs font-semibold text-[var(--ink-secondary)] hover:text-[var(--ink)]"
-                    >
-                      Hide
-                    </button>
+                    <div className="flex items-center gap-1">
+                      <a
+                        href={demoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="apple-press rounded-full px-2.5 py-1 text-xs font-semibold text-[var(--ink-secondary)] hover:text-[var(--ink)]"
+                      >
+                        Open tab
+                      </a>
+                      <button
+                        type="button"
+                        onClick={() => setDemoOpen(false)}
+                        className="apple-press rounded-full px-2.5 py-1 text-xs font-semibold text-[var(--ink-secondary)] hover:text-[var(--ink)]"
+                      >
+                        Hide
+                      </button>
+                    </div>
                   </div>
                   <iframe
                     title={`${project.title} live demo`}
@@ -376,6 +386,10 @@ export default function ProjectSheet({ project, originRect, titleId, onClosed })
                     className="aspect-[16/10] w-full bg-white"
                     sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
                   />
+                  <p className="border-t border-black/8 px-3 py-2 text-[0.7rem] leading-snug text-[var(--ink-secondary)]">
+                    If the embed stays blank, the host is blocking iframes — use
+                    Open tab.
+                  </p>
                 </div>
               )}
             </div>

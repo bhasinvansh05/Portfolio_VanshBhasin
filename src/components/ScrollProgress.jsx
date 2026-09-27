@@ -31,11 +31,11 @@ export default function ScrollProgress() {
 
   return (
     <div
-      className="pointer-events-none fixed inset-x-0 top-0 z-[70] h-[2px]"
+      className="pointer-events-none fixed inset-x-0 top-0 z-[80] h-[3px] bg-black/[0.06]"
       aria-hidden="true"
     >
       <div
-        className="h-full origin-left bg-[var(--ink)]/65 will-change-transform"
+        className="h-full w-full origin-left bg-[var(--ink)] will-change-transform"
         style={{ transform: `scaleX(${progress})` }}
       />
     </div>

@@ -7,13 +7,12 @@ import { useReducedMotion } from 'framer-motion';
  */
 export default function HeroPresence() {
   const reduceMotion = useReducedMotion();
-  const rootRef = useRef(null);
   const glowRef = useRef(null);
 
   useEffect(() => {
-    const root = rootRef.current;
     const glow = glowRef.current;
-    if (!root || !glow || reduceMotion) return undefined;
+    const hero = document.getElementById('hero');
+    if (!glow || !hero || reduceMotion) return undefined;
 
     const fine = window.matchMedia('(hover: hover) and (pointer: fine)');
     const reduceTransparency = window.matchMedia(
@@ -28,8 +27,8 @@ export default function HeroPresence() {
     let cy = ty;
 
     const paint = () => {
-      cx += (tx - cx) * 0.08;
-      cy += (ty - cy) * 0.08;
+      cx += (tx - cx) * 0.1;
+      cy += (ty - cy) * 0.1;
       glow.style.setProperty('--hx', `${(cx * 100).toFixed(2)}%`);
       glow.style.setProperty('--hy', `${(cy * 100).toFixed(2)}%`);
       glow.style.opacity = '1';
@@ -42,7 +41,7 @@ export default function HeroPresence() {
     };
 
     const onMove = (event) => {
-      const rect = root.getBoundingClientRect();
+      const rect = hero.getBoundingClientRect();
       if (!rect.width || !rect.height) return;
       tx = (event.clientX - rect.left) / rect.width;
       ty = (event.clientY - rect.top) / rect.height;
@@ -55,13 +54,13 @@ export default function HeroPresence() {
       if (!raf) raf = requestAnimationFrame(paint);
     };
 
-    root.addEventListener('pointermove', onMove);
-    root.addEventListener('pointerleave', onLeave);
+    hero.addEventListener('pointermove', onMove);
+    hero.addEventListener('pointerleave', onLeave);
     raf = requestAnimationFrame(paint);
 
     return () => {
-      root.removeEventListener('pointermove', onMove);
-      root.removeEventListener('pointerleave', onLeave);
+      hero.removeEventListener('pointermove', onMove);
+      hero.removeEventListener('pointerleave', onLeave);
       if (raf) cancelAnimationFrame(raf);
     };
   }, [reduceMotion]);
@@ -70,8 +69,7 @@ export default function HeroPresence() {
 
   return (
     <div
-      ref={rootRef}
-      className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
+      className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
       aria-hidden="true"
     >
       <div
