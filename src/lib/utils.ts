@@ -19,6 +19,22 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    id: 6,
+    title: "Kronos",
+    description:
+      "Live market charts and 24–48 hour forecasts powered by the Kronos foundation model — Flask webapp, yfinance data, and Hugging Face checkpoints.",
+    year: 2026,
+    href: "https://kronos.vanshbhasin.dev",
+    tags: ["Python", "Foundation Model"],
+    meta: "Personal · 2026",
+    details: [
+      "Built a Flask foresight webapp that loads any Yahoo Finance ticker, renders continuous OHLCV charts across ranges from 1D to 5Y, and runs 24–48h forecasts with Kronos-mini / small / base.",
+      "Wired predict and OHLCV APIs, ticker search, and tuned defaults from walk-forward backtests; pretrained weights load from Hugging Face (NeoQuasar).",
+      "Shipped a mobile-ready chart UX with dark/light theme, sticky Predict CTA, and Heroku deploy (Python 3.12, CPU PyTorch, custom domain).",
+      "Live app at kronos.vanshbhasin.dev; source at https://github.com/bhasinvansh05/Kronos.",
+    ],
+  },
+  {
     id: 1,
     title: "ConsultHub",
     description:
