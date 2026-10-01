@@ -11,49 +11,59 @@ const links = [
   { label: 'Contact', href: '#contact' },
 ];
 
+const SECTION_IDS = ['hero', 'experience', 'projects', 'skills', 'contact'];
+
 export default function AppleNav() {
   const [active, setActive] = useState('');
   const [scrolled, setScrolled] = useState(false);
   const reduceMotion = useReducedMotion();
 
   useEffect(() => {
-    const ids = ['experience', 'projects', 'skills', 'contact', 'hero'];
-    const elements = ids
-      .map((id) => document.getElementById(id))
-      .filter(Boolean);
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (!visible?.target?.id || visible.target.id === 'hero') {
-          setActive('');
-          return;
-        }
-        setActive(`#${visible.target.id}`);
-      },
-      { rootMargin: '-35% 0px -45% 0px', threshold: [0.15, 0.35, 0.6] },
-    );
-
-    elements.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
     let raf = 0;
+
+    const update = () => {
+      raf = 0;
+      const scrollY = window.scrollY;
+      setScrolled(scrollY > 12);
+
+      const doc = document.documentElement;
+      const maxScroll = Math.max(0, doc.scrollHeight - window.innerHeight);
+      /* Short last sections never reach a mid-nav marker; pin Contact at the bottom. */
+      if (maxScroll > 0 && scrollY >= maxScroll - 4) {
+        setActive('#contact');
+        return;
+      }
+
+      /* Marker sits just under the sticky nav so the highlight tracks the
+         section the user is actually reading. */
+      const marker =
+        scrollY +
+        Math.min(120, Math.max(72, window.innerHeight * 0.18));
+
+      let next = '';
+      for (const id of SECTION_IDS) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        const top = el.getBoundingClientRect().top + scrollY;
+        if (top <= marker) {
+          next = id === 'hero' ? '' : `#${id}`;
+        }
+      }
+      setActive(next);
+    };
+
     const onScroll = () => {
       if (raf) return;
-      raf = requestAnimationFrame(() => {
-        raf = 0;
-        setScrolled(window.scrollY > 12);
-      });
+      raf = requestAnimationFrame(update);
     };
-    onScroll();
+
+    update();
     window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
     return () => {
       if (raf) cancelAnimationFrame(raf);
       window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
     };
   }, []);
 
