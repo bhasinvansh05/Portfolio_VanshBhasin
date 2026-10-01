@@ -26,8 +26,16 @@ export default function AppleNav() {
       const scrollY = window.scrollY;
       setScrolled(scrollY > 12);
 
+      const doc = document.documentElement;
+      const maxScroll = Math.max(0, doc.scrollHeight - window.innerHeight);
+      /* Short last sections never reach a mid-nav marker; pin Contact at the bottom. */
+      if (maxScroll > 0 && scrollY >= maxScroll - 4) {
+        setActive('#contact');
+        return;
+      }
+
       /* Marker sits just under the sticky nav so the highlight tracks the
-         section the user is actually reading, not only a mid-viewport band. */
+         section the user is actually reading. */
       const marker =
         scrollY +
         Math.min(120, Math.max(72, window.innerHeight * 0.18));
